@@ -555,9 +555,6 @@ footer {
 .fun-controls { display:flex; align-items:end; gap:8px; }
 .fun-controls label { display:grid; gap:3px; color:var(--muted); font-size:10px; }
 .fun-controls select { min-height:32px; border:1px solid #9da5aa; background:#fff; padding:4px 8px; font-size:12px; }
-.fantasy-table-wrap { overflow:auto; padding:0 14px 14px; }
-.fantasy-table { min-width:790px; }
-.fantasy-table td { height:42px; }
 .fun-card { min-height:145px; padding:14px; border:1px solid #c7cbd0; background:linear-gradient(#fff,#f2f4f5); }
 .fun-card h3 { margin:7px 0; font-size:24px; font-weight:500; color:var(--navy); }
 .fun-card p { margin:4px 0; font-size:12px; line-height:1.45; }
