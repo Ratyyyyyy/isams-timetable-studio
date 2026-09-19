@@ -551,7 +551,15 @@ footer {
 .batch-cell-content small { margin-top:2px; color:#6a7177; font-size:9px; }
 .batch-empty { color:#9aa1a6; font-weight:400; }
 .batch-form-card label { display:grid; gap:5px; margin-bottom:12px; color:#50565b; font-size:11px; font-weight:600; }
-.batch-form-card input { min-height:35px; }
+.batch-form-card input, .batch-form-card select {
+  min-height:35px;
+  width:100%;
+  padding:5px 8px;
+  border:1px solid #aeb5ba;
+  border-radius:2px;
+  background:#fff;
+  color:var(--ink);
+}
 .batch-form-card .form-row { margin-bottom:0; }
 .batch-form-card .check-line { display:flex; align-items:center; gap:7px; }
 .batch-form-card .check-line input { width:15px; min-height:0; }
@@ -1008,14 +1016,31 @@ footer {
   font-weight: 600;
 }
 .batch-action-status {
-  min-height: 42px;
-  margin: 12px 0 0;
-  padding: 9px 10px;
-  border-left: 3px solid #2b709d;
-  background: #edf5f9;
-  color: #3f505b;
+  min-height: 18px;
+  margin: 9px 0 0;
+  padding: 0;
+  color: #596168;
   font-size: 11px;
-  line-height: 1.45;
+  line-height: 1.35;
+}
+.block-meta {
+  min-height: 31px;
+  margin: -4px 0 10px;
+  padding: 7px 8px;
+  border: 1px solid #d2d6d9;
+  background: #f2f3f4;
+  color: #646b70;
+  font-size: 10px;
+}
+.personal-block-form {
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid #cbd0d4;
+}
+.export-controls select:disabled {
+  background: #e7e9ea;
+  color: #555b60;
+  opacity: 1;
 }
 .batch-mini-guide {
   margin-top: 12px;

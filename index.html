@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#00365d" />
     <title>Pupil Timetable System</title>
-    <link rel="stylesheet" href="styles.css?v=202609200220" />
+    <link rel="stylesheet" href="styles.css?v=202609200310" />
   </head>
   <body>
     <header class="portal-header">
@@ -31,7 +31,7 @@
 
     <main class="workspace">
       <section class="panel portal-home-tools page-section" data-page-section="home" aria-label="Portal shortcuts">
-        <div class="panel-header"><div><p class="eyebrow">PUPIL PORTAL</p><h2>Welcome to Pupil Timetable System</h2><p>Choose one of the portal areas below. The normal order is Import → Timetable → Batch entry → Export.</p></div><span class="format-badge">SHORTCUTS</span></div>
+        <div class="panel-header"><div><p class="eyebrow">PUPIL PORTAL</p><h2>Welcome to Pupil Timetable System</h2></div><span class="format-badge">SHORTCUTS</span></div>
         <div class="portal-shortcuts">
           <button class="portal-shortcut" data-page="import"><img src="assets/portal-icon-3.jpg" alt="" /><span><strong>Import timetable</strong><small>PDF / JSON</small></span></button>
           <button class="portal-shortcut" data-page="timetable"><img src="assets/portal-icon-4.jpg" alt="" /><span><strong>My timetable</strong><small>View and edit cells</small></span></button>
@@ -47,7 +47,7 @@
           <div>
             <p class="eyebrow">ONE-CLICK IMPORT</p>
             <h2 id="importTitle">Bring in a timetable</h2>
-            <p>Use the PDF saved from iSAMS, or import this system's JSON format.</p>
+            <p>iSAMS PDF or timetable JSON.</p>
           </div>
           <div class="panel-header-actions"><button id="importButton" class="button primary">Import PDF / JSON</button><span class="format-badge">PDF → JSON</span></div>
         </div>
@@ -58,7 +58,7 @@
             <small>Tap here, or drag a file onto this box</small>
           </button>
           <div id="importStatus" class="import-status" role="status">
-            Campus mode keeps Reg–P14. P13/P14 stay blank when the source file does not contain them.
+            No file selected.
           </div>
         </div>
       </section>
@@ -68,7 +68,7 @@
           <div class="panel-header">
             <div>
               <h2 id="tableTitle">Student timetable</h2>
-              <p>Campus · Reg and P1–P14 · Monday to Friday</p>
+            <p>Reg–P14 · Monday–Friday</p>
             </div>
             <div class="panel-header-actions"><button id="demoButton" class="button secondary">Load demo</button><button id="resetButton" class="button danger">Reset</button><span class="live-badge">LIVE</span></div>
           </div>
@@ -136,23 +136,27 @@
           <div>
             <p class="eyebrow">TEACHER PORTAL · BATCH ENTRY</p>
             <h2 id="courseToolsTitle">Class timetable entry</h2>
-            <p>Select timetable cells, enter the lesson details once, then apply them to all selected cells.</p>
           </div>
           <span class="format-badge">MULTI-CELL EDIT</span>
         </div>
         <div class="batch-entry-layout">
           <div class="batch-grid-card">
-            <div class="subheading"><div><p class="eyebrow">STEP 1 · CELL SELECTION</p><h3>Choose cells to fill</h3><p class="subheading-help">Tap one or more cells. Selected cells turn blue.</p></div><div class="batch-selection-actions"><button id="batchSelectAllButton" type="button" class="button secondary">Select empty cells</button><button id="batchClearSelectionButton" type="button" class="button secondary">Clear selection</button></div></div>
+            <div class="subheading"><div><p class="eyebrow">CELL SELECTION</p><h3>Choose cells</h3></div><div class="batch-selection-actions"><button id="batchSelectAllButton" type="button" class="button secondary">Select empty cells</button><button id="batchClearSelectionButton" type="button" class="button secondary">Clear selection</button></div></div>
             <div id="batchGrid" class="batch-grid-wrap"></div>
           </div>
           <div class="batch-form-card">
-            <div class="subheading batch-form-heading"><div><p class="eyebrow">STEP 2 · LESSON DETAILS</p><h3>Apply to selected cells</h3></div><span id="batchSelectionStatus" class="selection-count">0 selected</span></div>
-            <label>Course / activity <span class="required-mark">Required</span><input id="batchCourseInput" type="text" placeholder="e.g. AS/Chemistry" autocomplete="off" /></label>
-            <div class="form-row"><label>Teacher<input id="batchTeacherInput" type="text" placeholder="e.g. LCA" /></label><label>Room<input id="batchRoomInput" type="text" placeholder="e.g. A312" /></label></div>
-            <label>Note<input id="batchNoteInput" type="text" placeholder="Optional note" /></label>
-            <div class="batch-form-actions"><button id="batchApplyButton" type="button" class="button primary">Apply lesson</button><button id="batchClearCellsButton" type="button" class="button danger">Remove lessons</button></div>
-            <p id="batchActionStatus" class="batch-action-status" role="status">Select cells on the left, then enter the lesson once.</p>
-            <div class="batch-mini-guide"><strong>How it works</strong><ol><li>Select the timetable cells.</li><li>Enter the course, teacher and room once.</li><li>Choose <em>Apply lesson</em>, then check the Timetable page.</li></ol></div>
+            <div class="subheading batch-form-heading"><div><p class="eyebrow">LESSON BLOCK</p><h3>Apply block</h3></div><span id="batchSelectionStatus" class="selection-count">0 selected</span></div>
+            <label>Block<select id="batchBlockSelect"></select></label>
+            <div id="batchBlockMeta" class="block-meta">No blocks detected</div>
+            <div class="batch-form-actions"><button id="batchApplyButton" type="button" class="button primary">Apply block</button><button id="batchClearCellsButton" type="button" class="button danger">Remove lessons</button></div>
+            <p id="batchActionStatus" class="batch-action-status" role="status">Select cells and choose a block.</p>
+            <div class="personal-block-form">
+              <div class="subheading"><div><p class="eyebrow">PERSONAL LESSON</p><h3>New block</h3></div></div>
+              <label>Course / activity<input id="personalCourseInput" type="text" placeholder="e.g. Chemistry Salon" autocomplete="off" /></label>
+              <div class="form-row"><label>Teacher<input id="personalTeacherInput" type="text" placeholder="e.g. LCA" /></label><label>Room<input id="personalRoomInput" type="text" placeholder="e.g. TBC" /></label></div>
+              <label>Note<input id="personalNoteInput" type="text" placeholder="Optional" /></label>
+              <button id="personalBlockButton" type="button" class="button secondary">Add block</button>
+            </div>
           </div>
         </div>
       </section>
@@ -162,7 +166,6 @@
           <div>
             <p class="eyebrow">FUN TIMETABLE · FOR FUN ONLY</p>
             <h2 id="funPlannerTitle">Fun timetable</h2>
-            <p>Select an option to preview a simulated timetable. It never changes or downloads your real timetable.</p>
           </div>
           <div class="fun-controls">
             <label>Option
@@ -186,12 +189,12 @@
           <div>
             <p class="eyebrow">WALLPAPER GENERATOR</p>
             <h2 id="exportTitle">Generate campus timetable wallpaper</h2>
-            <p>Fixed device proportions, safe margins, and the same grey grid language as the portal.</p>
           </div>
           <div class="export-controls">
             <label>
               Device
               <select id="deviceSelect">
+                <option value="default">Default</option>
                 <option value="ipad">iPad Pro · 2048 × 2732</option>
                 <option value="phone">Phone · 1080 × 2400</option>
               </select>
@@ -199,6 +202,7 @@
             <label>
               Format
               <select id="exportModeSelect">
+                <option value="default">Default</option>
                 <option value="native">Native timetable · Reg–P12</option>
                 <option value="p13p14">Campus + P13/P14</option>
               </select>
@@ -217,7 +221,6 @@
           <div>
             <p class="eyebrow">HOW TO USE</p>
             <h2 id="guideTitle">From iSAMS to your wallpaper</h2>
-            <p>Import your school timetable, correct the details, and export a wallpaper that fits your device.</p>
           </div>
           <span class="format-badge">3 STAGES</span>
         </div>
@@ -228,7 +231,7 @@
         </div>
 
         <section class="guide-stage">
-          <div class="guide-stage-heading"><span>1</span><div><p class="eyebrow">IMPORT THE SOURCE</p><h3>Save your timetable from iSAMS</h3><p>Follow these four taps on iPad, then upload the saved PDF on the Import page.</p></div></div>
+          <div class="guide-stage-heading"><span>1</span><div><p class="eyebrow">IMPORT THE SOURCE</p><h3>Save your timetable from iSAMS</h3></div></div>
           <div class="guide-grid">
             <article class="guide-step"><img data-guide-image="0" alt="Open the Timetable section in the pupil portal" /><h3>Open Timetable</h3><p>Tap <strong>Timetable</strong> in the portal navigation.</p></article>
             <article class="guide-step"><img data-guide-image="1" alt="Open My Timetable in the pupil portal" /><h3>Open My Timetable</h3><p>Wait until the complete Monday–Friday grid appears.</p></article>
@@ -238,16 +241,16 @@
         </section>
 
         <section class="guide-stage">
-          <div class="guide-stage-heading"><span>2</span><div><p class="eyebrow">ADJUST YOUR TIMETABLE</p><h3>Correct the timetable before exporting</h3><p>Use the method that matches the size of your change.</p></div></div>
+          <div class="guide-stage-heading"><span>2</span><div><p class="eyebrow">ADJUST YOUR TIMETABLE</p><h3>Correct the timetable</h3></div></div>
           <div class="guide-methods">
             <article class="guide-method"><span class="method-tag">ONE CELL</span><h4>Use Timetable</h4><ol><li>Open <strong>Timetable</strong>.</li><li>Tap the cell you want to change.</li><li>Edit Course, Teacher, Room or Note in <strong>Cell Editor</strong>.</li><li>Your change is saved automatically.</li></ol></article>
-            <article class="guide-method"><span class="method-tag">SEVERAL CELLS</span><h4>Use Batch entry</h4><ol><li>Open <strong>Batch entry</strong>.</li><li>Select the cells that should contain the same lesson.</li><li>Enter the lesson details once and choose <strong>Apply lesson</strong>.</li><li>Return to <strong>Timetable</strong> and check the result.</li></ol></article>
+            <article class="guide-method"><span class="method-tag">SEVERAL CELLS</span><h4>Use Batch entry</h4><ol><li>Open <strong>Batch entry</strong>.</li><li>Select the target cells.</li><li>Choose a detected block and select <strong>Apply block</strong>.</li><li>For a new activity, add a <strong>Personal lesson</strong> first.</li></ol></article>
           </div>
         </section>
 
         <section class="guide-stage guide-export-stage">
-          <div class="guide-stage-heading"><span>3</span><div><p class="eyebrow">CREATE THE WALLPAPER</p><h3>Preview at the correct device size</h3><p>Open Export only after the timetable looks correct.</p></div></div>
-          <div class="export-instructions"><div><strong>Choose Device</strong><p>Select iPad Pro or Phone.</p></div><div><strong>Choose Format</strong><p>Use Reg–P12, or include P13/P14.</p></div><div><strong>Check Preview</strong><p>Confirm the logo, margins and timetable are fully visible.</p></div><div><strong>Download PNG</strong><p>Save the image and set it as your wallpaper.</p></div></div>
+          <div class="guide-stage-heading"><span>3</span><div><p class="eyebrow">CREATE THE WALLPAPER</p><h3>Export the timetable</h3></div></div>
+          <div class="export-instructions"><div><strong>Choose Device</strong><p>Default, iPad Pro or Phone.</p></div><div><strong>Choose Format</strong><p>Default is fixed. Device wallpapers can use Reg–P12 or P13/P14.</p></div><div><strong>Check Preview</strong><p>Check the timetable.</p></div><div><strong>Download PNG</strong><p>Save the image.</p></div></div>
         </section>
         <div class="guide-note">
           <strong>Before downloading:</strong> check the Timetable page first. The wallpaper uses the timetable currently saved in this browser.
@@ -261,8 +264,8 @@
 
     <input id="importInput" type="file" accept=".pdf,.json,application/pdf,application/json" hidden />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="logo-data.js?v=202609200220"></script>
-    <script src="guide-data.js?v=202609200220"></script>
-    <script src="app.js?v=202609200220"></script>
+    <script src="logo-data.js?v=202609200310"></script>
+    <script src="guide-data.js?v=202609200310"></script>
+    <script src="app.js?v=202609200310"></script>
   </body>
 </html>

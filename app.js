@@ -44,6 +44,12 @@ function makeDefaultState() {
       return { label: period[0], time: period[1] };
     }),
     cells: {},
+    profile: {
+      schoolName: "",
+      className: "",
+      studentName: "",
+    },
+    personalBlocks: [],
     standingCourses: {},
     source: "Blank campus template",
     updatedAt: Date.now(),
@@ -52,6 +58,11 @@ function makeDefaultState() {
 
 function makeDemoState() {
   const demo = makeDefaultState();
+  demo.profile = {
+    schoolName: "Ulink College of Shanghai",
+    className: "AS-5",
+    studentName: "Sample Student",
+  };
   const put = function (period, day, course, teacher, room, note) {
     demo.cells[key(period, day)] = lesson(course, teacher, room, note);
   };
@@ -146,6 +157,12 @@ function normaliseState(candidate) {
   return {
     periods: periods,
     cells: cells,
+    profile: {
+      schoolName: String(candidate.profile && candidate.profile.schoolName || candidate.schoolName || "").trim(),
+      className: String(candidate.profile && candidate.profile.className || candidate.className || "").trim(),
+      studentName: String(candidate.profile && candidate.profile.studentName || candidate.studentName || "").trim(),
+    },
+    personalBlocks: (Array.isArray(candidate.personalBlocks) ? candidate.personalBlocks : []).map(normalizeCell).filter(function (block) { return block.course; }),
     standingCourses: candidate.standingCourses && typeof candidate.standingCourses === "object"
       ? candidate.standingCourses
       : {},
@@ -203,11 +220,13 @@ const manualAddButton = document.querySelector("#manualAddButton");
 const funScenarioSelect = document.querySelector("#funScenarioSelect");
 const batchGrid = document.querySelector("#batchGrid");
 const batchSelectionStatus = document.querySelector("#batchSelectionStatus");
-const batchCourseInput = document.querySelector("#batchCourseInput");
-const batchTeacherInput = document.querySelector("#batchTeacherInput");
-const batchRoomInput = document.querySelector("#batchRoomInput");
-const batchNoteInput = document.querySelector("#batchNoteInput");
+const batchBlockSelect = document.querySelector("#batchBlockSelect");
+const batchBlockMeta = document.querySelector("#batchBlockMeta");
 const batchActionStatus = document.querySelector("#batchActionStatus");
+const personalCourseInput = document.querySelector("#personalCourseInput");
+const personalTeacherInput = document.querySelector("#personalTeacherInput");
+const personalRoomInput = document.querySelector("#personalRoomInput");
+const personalNoteInput = document.querySelector("#personalNoteInput");
 const logoImage = new Image();
 if (window.UCS_LOGO_DATA) logoImage.src = window.UCS_LOGO_DATA;
 
@@ -268,6 +287,7 @@ function renderTable() {
     });
   });
   renderBatchGrid();
+  renderBatchBlocks();
 }
 
 function selectedBatchCells() {
@@ -302,12 +322,13 @@ function renderBatchGrid() {
 function applyBatchEntry(clearOnly) {
   const selected = selectedBatchCells();
   if (!selected.length) {
-    if (batchActionStatus) batchActionStatus.textContent = "Select at least one timetable cell first.";
+    if (batchActionStatus) batchActionStatus.textContent = "Select at least one cell.";
     return;
   }
-  if (!clearOnly && !batchCourseInput.value.trim()) {
-    if (batchActionStatus) batchActionStatus.textContent = "Enter a course or activity before applying the lesson.";
-    batchCourseInput.focus();
+  const block = clearOnly ? null : selectedBatchBlock();
+  if (!clearOnly && !block) {
+    if (batchActionStatus) batchActionStatus.textContent = "Choose a block.";
+    if (batchBlockSelect) batchBlockSelect.focus();
     return;
   }
   selected.forEach(function (cellKey) {
@@ -315,14 +336,14 @@ function applyBatchEntry(clearOnly) {
       delete state.cells[cellKey];
       delete state.standingCourses[cellKey];
     } else {
-      state.cells[cellKey] = lesson(batchCourseInput.value.trim(), batchTeacherInput.value.trim(), batchRoomInput.value.trim(), batchNoteInput.value.trim());
+      state.cells[cellKey] = lesson(block.course, block.teacher, block.room, block.note);
       delete state.standingCourses[cellKey];
     }
   });
   saveState();
   renderTable();
   drawWallpaper();
-  if (batchActionStatus) batchActionStatus.textContent = (clearOnly ? "Removed lessons from " : "Lesson applied to ") + selected.length + " cell" + (selected.length === 1 ? "" : "s") + ". Open Timetable to verify the result.";
+  if (batchActionStatus) batchActionStatus.textContent = (clearOnly ? "Removed from " : "Applied to ") + selected.length + " cell" + (selected.length === 1 ? "" : "s") + ".";
 }
 
 function renderLessonCell(period, day, cell) {
@@ -516,15 +537,91 @@ function applyState(nextState, message, kind) {
 
 function courseBlocks() {
   const groups = {};
-  Object.entries(state.cells).forEach(function (entry) {
-    const parts = entry[0].split("|");
-    const cell = entry[1];
+  function addBlock(cell, occurrence, personal) {
     if (!cell.course) return;
     const signature = [cell.course, cell.teacher, cell.room, cell.note].join("¦");
-    if (!groups[signature]) groups[signature] = { signature: signature, course: cell.course, teacher: cell.teacher, room: cell.room, note: cell.note, occurrences: [] };
-    groups[signature].occurrences.push({ period: parts[0], day: parts[1] });
+    if (!groups[signature]) {
+      groups[signature] = {
+        signature: signature,
+        course: cell.course,
+        teacher: cell.teacher,
+        room: cell.room,
+        note: cell.note,
+        occurrences: [],
+        personal: false,
+      };
+    }
+    if (occurrence) groups[signature].occurrences.push(occurrence);
+    if (personal) groups[signature].personal = true;
+  }
+  Object.entries(state.cells).forEach(function (entry) {
+    const parts = entry[0].split("|");
+    addBlock(normalizeCell(entry[1]), { period: parts[0], day: parts[1] }, false);
   });
-  return Object.values(groups).sort(function (a, b) { return b.occurrences.length - a.occurrences.length || a.course.localeCompare(b.course); });
+  state.personalBlocks.forEach(function (block) {
+    addBlock(normalizeCell(block), null, true);
+  });
+  return Object.values(groups).sort(function (a, b) {
+    return b.occurrences.length - a.occurrences.length || Number(b.personal) - Number(a.personal) || a.course.localeCompare(b.course);
+  });
+}
+
+function selectedBatchBlock() {
+  return courseBlocks().find(function (block) {
+    return block.signature === (batchBlockSelect && batchBlockSelect.value);
+  }) || null;
+}
+
+function renderBatchBlocks(preferredSignature) {
+  if (!batchBlockSelect) return;
+  const blocks = courseBlocks();
+  const previous = preferredSignature || batchBlockSelect.value;
+  batchBlockSelect.innerHTML = blocks.length
+    ? blocks.map(function (block) {
+      const details = [block.course, block.teacher, block.room].filter(Boolean).join(" · ");
+      return "<option value=\"" + escapeHtml(block.signature) + "\">" + escapeHtml(details) + "</option>";
+    }).join("")
+    : "<option value=\"\">No blocks</option>";
+  if (blocks.some(function (block) { return block.signature === previous; })) {
+    batchBlockSelect.value = previous;
+  }
+  const selected = selectedBatchBlock();
+  if (batchBlockMeta) {
+    if (!selected) {
+      batchBlockMeta.textContent = "No blocks detected";
+    } else {
+      const source = selected.personal && !selected.occurrences.length
+        ? "Personal block"
+        : selected.occurrences.length + " lesson" + (selected.occurrences.length === 1 ? "" : "s");
+      batchBlockMeta.textContent = [source, selected.note].filter(Boolean).join(" · ");
+    }
+  }
+}
+
+function addPersonalBlock() {
+  const block = lesson(
+    personalCourseInput && personalCourseInput.value.trim(),
+    personalTeacherInput && personalTeacherInput.value.trim(),
+    personalRoomInput && personalRoomInput.value.trim(),
+    personalNoteInput && personalNoteInput.value.trim()
+  );
+  if (!block.course) {
+    if (batchActionStatus) batchActionStatus.textContent = "Enter a course or activity.";
+    if (personalCourseInput) personalCourseInput.focus();
+    return;
+  }
+  const signature = [block.course, block.teacher, block.room, block.note].join("¦");
+  const exists = state.personalBlocks.some(function (item) {
+    const normalized = normalizeCell(item);
+    return [normalized.course, normalized.teacher, normalized.room, normalized.note].join("¦") === signature;
+  });
+  if (!exists) state.personalBlocks.push(block);
+  saveState();
+  renderBatchBlocks(signature);
+  [personalCourseInput, personalTeacherInput, personalRoomInput, personalNoteInput].forEach(function (input) {
+    if (input) input.value = "";
+  });
+  if (batchActionStatus) batchActionStatus.textContent = exists ? "Block already available." : "Block added.";
 }
 
 function renderCourseTools() {
@@ -652,15 +749,18 @@ const batchApplyButton = document.querySelector("#batchApplyButton");
 const batchClearCellsButton = document.querySelector("#batchClearCellsButton");
 const batchSelectAllButton = document.querySelector("#batchSelectAllButton");
 const batchClearSelectionButton = document.querySelector("#batchClearSelectionButton");
+const personalBlockButton = document.querySelector("#personalBlockButton");
 if (batchApplyButton) batchApplyButton.addEventListener("click", function () { applyBatchEntry(false); });
 if (batchClearCellsButton) batchClearCellsButton.addEventListener("click", function () { applyBatchEntry(true); });
+if (batchBlockSelect) batchBlockSelect.addEventListener("change", function () { renderBatchBlocks(batchBlockSelect.value); });
+if (personalBlockButton) personalBlockButton.addEventListener("click", addPersonalBlock);
 if (batchSelectAllButton) batchSelectAllButton.addEventListener("click", function () {
   batchGrid.querySelectorAll("input[data-batch-cell]").forEach(function (input) {
     const cell = state.cells[input.dataset.batchCell];
     input.checked = !cell || !cell.course;
   });
   updateBatchSelectionStatus();
-  if (batchActionStatus) batchActionStatus.textContent = "All empty cells are selected. Uncheck any cells you do not want to fill.";
+  if (batchActionStatus) batchActionStatus.textContent = "Empty cells selected.";
 });
 if (batchClearSelectionButton) batchClearSelectionButton.addEventListener("click", function () {
   batchGrid.querySelectorAll("input[data-batch-cell]").forEach(function (input) { input.checked = false; });
@@ -676,7 +776,7 @@ document.querySelector("#demoButton").addEventListener("click", function () {
   document.querySelector("#timetableSection").scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
-if (deviceSelect) deviceSelect.addEventListener("change", drawWallpaper);
+if (deviceSelect) deviceSelect.addEventListener("change", updateExportControls);
 if (exportModeSelect) exportModeSelect.addEventListener("change", drawWallpaper);
 const downloadButton = document.querySelector("#downloadButton");
 if (downloadButton) downloadButton.addEventListener("click", downloadWallpaper);
@@ -685,7 +785,7 @@ document.querySelectorAll(".quick-export").forEach(function (button) {
   button.addEventListener("click", function () {
     if (deviceSelect) deviceSelect.value = button.dataset.device;
     if (exportModeSelect) exportModeSelect.value = button.dataset.mode || "native";
-    drawWallpaper();
+    updateExportControls();
     downloadWallpaper();
   });
 });
@@ -733,7 +833,7 @@ async function importFile(file) {
   try {
     if (lowerName.endsWith(".json") || file.type === "application/json") {
       const parsed = JSON.parse(await file.text());
-      applyState(parsed, "JSON imported. Campus rows were kept; missing P13/P14 remain blank.", "success");
+      applyState(parsed, "JSON imported.", "success");
       return;
     }
 
@@ -749,7 +849,7 @@ async function importFile(file) {
     }
     applyState(
       parsed,
-      "PDF imported: " + recognised + " timetable cells recognised. P13/P14 were kept when present; later rows were ignored.",
+      "PDF imported · " + recognised + " cells" + (parsed.profile.studentName ? " · " + parsed.profile.studentName : ""),
       "success"
     );
   } catch (error) {
@@ -798,6 +898,50 @@ function median(values) {
   if (!values.length) return 0;
   const ordered = values.slice().sort(function (a, b) { return a - b; });
   return ordered[Math.floor(ordered.length / 2)];
+}
+
+function extractTimetableProfile(items, dayItems) {
+  const page = dayItems[0].page;
+  const headerY = Math.max.apply(null, dayItems.map(function (item) { return item.y; }));
+  const candidates = items.filter(function (item) {
+    return item.page === page && item.y > headerY + 4 && item.y < headerY + 180;
+  }).sort(function (a, b) {
+    if (Math.abs(a.y - b.y) > 3) return b.y - a.y;
+    return a.x - b.x;
+  });
+  const lines = [];
+  candidates.forEach(function (item) {
+    let line = lines.find(function (candidate) { return Math.abs(candidate.y - item.y) <= 3; });
+    if (!line) {
+      line = { y: item.y, items: [] };
+      lines.push(line);
+    }
+    line.items.push(item);
+  });
+  const textLines = lines.map(function (line) {
+    return line.items.sort(function (a, b) { return a.x - b.x; })
+      .map(function (item) { return item.text; }).join(" ").replace(/\s+/g, " ").trim();
+  }).filter(Boolean);
+  const schoolName = textLines.find(function (line) {
+    return /\b(college|school|academy)\b/i.test(line);
+  }) || "";
+  const identity = textLines.find(function (line) {
+    return line !== schoolName && (line.includes(",") || /^(?:AS|IG|A\s?Level|Year|Grade)[-\s]?\d/i.test(line));
+  }) || "";
+  let className = "";
+  let studentName = "";
+  if (identity.includes(",")) {
+    const divider = identity.indexOf(",");
+    className = identity.slice(0, divider).trim();
+    studentName = identity.slice(divider + 1).trim();
+  } else if (identity) {
+    className = identity;
+  }
+  return {
+    schoolName: schoolName,
+    className: className,
+    studentName: studentName,
+  };
 }
 
 function parseIsamsPdfItems(items) {
@@ -953,6 +1097,8 @@ function parseIsamsPdfItems(items) {
   return {
     periods: periods,
     cells: cells,
+    profile: extractTimetableProfile(items, dayItems),
+    personalBlocks: [],
     source: "Imported iSAMS PDF",
   };
 }
@@ -972,22 +1118,52 @@ function downloadBlob(blob, filename) {
 }
 
 function selectedExportMode() {
+  if (deviceSelect && deviceSelect.value === "default") return "default";
   return exportModeSelect && exportModeSelect.value === "p13p14" ? "p13p14" : "native";
+}
+
+function updateExportControls() {
+  if (!deviceSelect || !exportModeSelect) return;
+  const isDefault = deviceSelect.value === "default";
+  const defaultOption = exportModeSelect.querySelector("option[value=\"default\"]");
+  if (defaultOption) defaultOption.hidden = !isDefault;
+  if (isDefault) {
+    exportModeSelect.value = "default";
+    exportModeSelect.disabled = true;
+  } else {
+    exportModeSelect.disabled = false;
+    if (exportModeSelect.value === "default") exportModeSelect.value = "native";
+  }
+  drawWallpaper();
 }
 
 function downloadWallpaper() {
   drawWallpaper();
-  const filename = "CampusTimetable_" +
-    (deviceSelect && deviceSelect.value === "ipad" ? "iPad" : "Phone") + "_" +
-    (selectedExportMode() === "p13p14" ? "P13-P14" : "Native") + ".png";
+  const device = deviceSelect ? deviceSelect.value : "default";
+  const safeName = String(state.profile.studentName || "Student").replace(/[^a-z0-9_-]+/gi, "_").replace(/^_+|_+$/g, "");
+  const filename = device === "default"
+    ? "Timetable_" + safeName + "_Default.png"
+    : "CampusTimetable_" + (device === "ipad" ? "iPad" : "Phone") + "_" +
+      (selectedExportMode() === "p13p14" ? "P13-P14" : "Native") + ".png";
   canvas.toBlob(function (blob) {
     if (blob) downloadBlob(blob, filename);
   }, "image/png");
 }
 
 function drawWallpaper() {
-  const config = deviceSelect && deviceSelect.value === "ipad"
+  const device = deviceSelect ? deviceSelect.value : "default";
+  const config = device === "default"
     ? {
+      width: 1240,
+      height: 1754,
+      x: 74,
+      y: 190,
+      tableWidth: 1092,
+      bottomMargin: 84,
+      compact: false,
+      defaultStyle: true,
+    }
+    : device === "ipad" ? {
       width: 2048,
       height: 2732,
       x: 112,
@@ -1015,13 +1191,28 @@ function drawWallpaper() {
   const ctx = canvas.getContext("2d");
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  drawBrand(ctx, config);
+  if (config.defaultStyle) drawDefaultHeader(ctx, config);
+  else drawBrand(ctx, config);
   const periods = selectedExportMode() === "p13p14"
     ? state.periods
     : state.periods.filter(function (period) {
       return period.label !== "P13" && period.label !== "P14";
     });
   drawCanvasTable(ctx, config, periods);
+}
+
+function drawDefaultHeader(ctx, config) {
+  const school = state.profile.schoolName || "School Timetable";
+  const identity = [state.profile.className, state.profile.studentName].filter(Boolean).join(",") || "Student Timetable";
+  ctx.save();
+  ctx.fillStyle = "#454545";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = "500 38px Arial";
+  ctx.fillText(school, config.width / 2, 72);
+  ctx.font = "400 31px Arial";
+  ctx.fillText(identity, config.width / 2, 116);
+  ctx.restore();
 }
 
 function drawBrand(ctx, config) {
@@ -1203,7 +1394,7 @@ document.querySelectorAll("[data-page]").forEach(function (button) {
 setupGuideImages();
 renderTable();
 renderCourseTools();
-drawWallpaper();
+updateExportControls();
 showPage(location.hash.slice(1) || "home");
 runFunPlanner();
 logoImage.addEventListener("load", drawWallpaper);
