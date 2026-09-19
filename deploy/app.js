@@ -583,6 +583,7 @@ if (bulkAddButton) bulkAddButton.addEventListener("click", addBulkBlock);
 if (manualAddButton) manualAddButton.addEventListener("click", addManualLesson);
 const runFunPlannerButton = document.querySelector("#runFunPlannerButton");
 if (runFunPlannerButton) runFunPlannerButton.addEventListener("click", runFunPlanner);
+if (funScenarioSelect) funScenarioSelect.addEventListener("change", runFunPlanner);
 
 document.querySelector("#demoButton").addEventListener("click", function () {
   applyState(makeDemoState(), "Demo timetable loaded. You can edit it or import a real PDF.", "success");
@@ -1114,4 +1115,5 @@ renderTable();
 renderCourseTools();
 drawWallpaper();
 showPage(location.hash.slice(1) || "home");
+runFunPlanner();
 logoImage.addEventListener("load", drawWallpaper);
