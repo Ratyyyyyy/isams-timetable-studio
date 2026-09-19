@@ -82,6 +82,8 @@ const clearCellButton = document.querySelector("#clearCellButton");
 const deviceSelect = document.querySelector("#deviceSelect");
 const versionSelect = document.querySelector("#versionSelect");
 const canvas = document.querySelector("#wallpaperCanvas");
+const logoImage = new Image();
+if (window.UCS_LOGO_DATA) logoImage.src = window.UCS_LOGO_DATA;
 
 const editorInputs = [courseInput, teacherInput, roomInput, noteInput];
 
@@ -329,53 +331,18 @@ function drawWallpaper() {
 }
 
 function drawBrand(ctx, config) {
-  const s = config.logoScale;
-  const x = config.logoX;
-  const y = config.logoY;
+  if (logoImage.complete && logoImage.naturalWidth) {
+    const width = config.compact ? 250 : 430;
+    const height = width * logoImage.naturalHeight / logoImage.naturalWidth;
+    ctx.drawImage(logoImage, config.logoX, config.logoY, width, height);
+    return;
+  }
   ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(s, s);
-
-  // Complete five-stroke UCS mark. The outer and inner strokes taper into
-  // the characteristic U-shape instead of ending as plain rectangles.
-  ctx.fillStyle = "#ee242b";
-  ctx.beginPath();
-  ctx.moveTo(0, 0); ctx.lineTo(15, 0); ctx.lineTo(15, 72);
-  ctx.quadraticCurveTo(15, 88, 27, 101); ctx.lineTo(27, 116);
-  ctx.quadraticCurveTo(0, 98, 0, 72); ctx.closePath(); ctx.fill();
-
   ctx.fillStyle = "#123f91";
-  ctx.beginPath();
-  ctx.moveTo(32, 0); ctx.lineTo(49, 0); ctx.lineTo(49, 104);
-  ctx.quadraticCurveTo(49, 115, 61, 122); ctx.lineTo(61, 139);
-  ctx.quadraticCurveTo(32, 126, 32, 104); ctx.closePath(); ctx.fill();
-
-  ctx.fillStyle = "#ee242b";
-  ctx.beginPath();
-  ctx.moveTo(68, 81); ctx.lineTo(85, 81); ctx.lineTo(85, 141);
-  ctx.quadraticCurveTo(76.5, 145, 68, 141); ctx.closePath(); ctx.fill();
-
-  ctx.fillStyle = "#123f91";
-  ctx.beginPath();
-  ctx.moveTo(92, 0); ctx.lineTo(109, 0); ctx.lineTo(109, 104);
-  ctx.quadraticCurveTo(109, 126, 80, 139); ctx.lineTo(80, 122);
-  ctx.quadraticCurveTo(92, 115, 92, 104); ctx.closePath(); ctx.fill();
-
-  ctx.fillStyle = "#ee242b";
-  ctx.beginPath();
-  ctx.moveTo(126, 0); ctx.lineTo(141, 0); ctx.lineTo(141, 72);
-  ctx.quadraticCurveTo(141, 98, 114, 116); ctx.lineTo(114, 101);
-  ctx.quadraticCurveTo(126, 88, 126, 72); ctx.closePath(); ctx.fill();
-
-  ctx.fillStyle = "#123f91";
-  ctx.font = "700 38px Arial";
-  ctx.textAlign = "left";
-  ctx.textBaseline = "top";
-  ctx.fillText("ULINK", 166, 6);
-  ctx.fillText("COLLEGE", 166, 43);
-  ctx.fillStyle = "#667080";
-  ctx.font = "500 25px Arial";
-  ctx.fillText("SHANGHAI", 166, 84);
+  ctx.font = `700 ${config.compact ? 25 : 38}px Arial`;
+  ctx.fillText("ULINK COLLEGE", config.logoX, config.logoY + 20);
+  ctx.font = `${config.compact ? 17 : 25}px Arial`;
+  ctx.fillText("SHANGHAI", config.logoX, config.logoY + 52);
   ctx.restore();
 }
 
@@ -512,3 +479,4 @@ function drawCanvasCell(ctx, x, y, width, height, cell, compact) {
 
 renderTable();
 drawWallpaper();
+logoImage.addEventListener("load", drawWallpaper);
