@@ -14,6 +14,8 @@ const PERIODS = [
   ["P10", "15:05–15:45"],
   ["P11", "15:50–16:30"],
   ["P12", "16:35–17:00"],
+  ["P13", "17:00–18:00"],
+  ["P14", "18:00–20:00"],
 ];
 
 const STORAGE_KEY = "pupil-timetable-system-v2";
@@ -82,7 +84,7 @@ function normalizePeriodLabel(value) {
   const match = raw.match(/^P0*(\d{1,2})$/);
   if (!match) return null;
   const number = Number(match[1]);
-  return number >= 1 && number <= 12 ? "P" + number : null;
+  return number >= 1 && number <= 14 ? "P" + number : null;
 }
 
 function normalizeCell(candidate) {
@@ -172,6 +174,7 @@ const periodTimeInput = document.querySelector("#periodTimeInput");
 const copyDownButton = document.querySelector("#copyDownButton");
 const clearCellButton = document.querySelector("#clearCellButton");
 const deviceSelect = document.querySelector("#deviceSelect");
+const exportModeSelect = document.querySelector("#exportModeSelect");
 const canvas = document.querySelector("#wallpaperCanvas");
 const importInput = document.querySelector("#importInput");
 const importStatus = document.querySelector("#importStatus");
@@ -420,6 +423,19 @@ document.querySelector("#demoButton").addEventListener("click", function () {
   document.querySelector("#timetableSection").scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
+deviceSelect.addEventListener("change", drawWallpaper);
+exportModeSelect.addEventListener("change", drawWallpaper);
+document.querySelector("#downloadButton").addEventListener("click", downloadWallpaper);
+
+document.querySelectorAll(".quick-export").forEach(function (button) {
+  button.addEventListener("click", function () {
+    deviceSelect.value = button.dataset.device;
+    exportModeSelect.value = button.dataset.mode || "native";
+    drawWallpaper();
+    downloadWallpaper();
+  });
+});
+
 document.querySelector("#exportJsonButton").addEventListener("click", function () {
   downloadBlob(
     new Blob([JSON.stringify(state, null, 2)], { type: "application/json" }),
@@ -463,7 +479,7 @@ async function importFile(file) {
   try {
     if (lowerName.endsWith(".json") || file.type === "application/json") {
       const parsed = JSON.parse(await file.text());
-      applyState(parsed, "JSON imported. Only Campus / P1–P12 entries were kept.", "success");
+      applyState(parsed, "JSON imported. Campus rows were kept; missing P13/P14 remain blank.", "success");
       return;
     }
 
@@ -479,7 +495,7 @@ async function importFile(file) {
     }
     applyState(
       parsed,
-      "PDF imported: " + recognised + " timetable cells recognised. P13+ rows are ignored.",
+      "PDF imported: " + recognised + " timetable cells recognised. P13/P14 were kept when present; later rows were ignored.",
       "success"
     );
   } catch (error) {
@@ -704,7 +720,8 @@ function downloadBlob(blob, filename) {
 function downloadWallpaper() {
   drawWallpaper();
   const filename = "CampusTimetable_" +
-    (deviceSelect.value === "ipad" ? "iPad" : "Phone") + ".png";
+    (deviceSelect.value === "ipad" ? "iPad" : "Phone") + "_" +
+    (exportModeSelect.value === "p13p14" ? "P13-P14" : "Native") + ".png";
   canvas.toBlob(function (blob) {
     if (blob) downloadBlob(blob, filename);
   }, "image/png");
@@ -741,7 +758,12 @@ function drawWallpaper() {
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   drawBrand(ctx, config);
-  drawCanvasTable(ctx, config, state.periods);
+  const periods = exportModeSelect.value === "p13p14"
+    ? state.periods
+    : state.periods.filter(function (period) {
+      return period.label !== "P13" && period.label !== "P14";
+    });
+  drawCanvasTable(ctx, config, periods);
 }
 
 function drawBrand(ctx, config) {
@@ -763,7 +785,10 @@ function drawCanvasTable(ctx, config, periods) {
   const headerHeight = config.compact ? 48 : 58;
   const available = config.height - config.y - config.bottomMargin - headerHeight;
   const rowWeights = periods.map(function (period) {
-    return period.label === "Reg" ? 0.68 : 1;
+    if (period.label === "Reg") return 0.68;
+    if (period.label === "P13") return 1.05;
+    if (period.label === "P14") return 1.22;
+    return 1;
   });
   const weightTotal = rowWeights.reduce(function (sum, value) { return sum + value; }, 0);
   const timeWidth = Math.round(config.tableWidth * (config.compact ? 0.105 : 0.098));
@@ -907,6 +932,7 @@ setupGuideImages();
 renderTable();
 drawWallpaper();
 logoImage.addEventListener("load", drawWallpaper);
+
 
 
 
