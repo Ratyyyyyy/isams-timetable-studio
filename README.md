@@ -23,4 +23,9 @@ All timetable edits stay in the current browser's `localStorage`. The site does 
 
 Open `index.html`, or serve this folder with any static web server.
 
-The wallpaper generator uses the provided Ulink College source logo asset.\n\nThis is a personal planning tool and is not an official iSAMS or school service.
+This is a personal planning tool and is not an official iSAMS or school service.
+
+## Current release
+
+Campus-only timetable mode with iSAMS PDF import, JSON export, wallpaper generation, and an in-page How to use guide.
+
