@@ -1,56 +1,75 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#00365d" />
-    <title>Timetable Studio</title>
-    <link rel="stylesheet" href="styles.css?v=202609192130" />
+    <title>Pupil Timetable System</title>
+    <link rel="stylesheet" href="styles.css?v=202609192300" />
   </head>
   <body>
     <header class="portal-header">
-      <div class="isams-brand" aria-label="iSAMS-inspired timetable studio">
-        <div class="brand-orbit" aria-hidden="true">
-          <span></span><span></span><span></span>
-        </div>
-        <strong>iSAMS</strong>
+      <div class="isams-brand" aria-label="Pupil Timetable System">
+        <strong>Pupil Timetable System</strong>
       </div>
       <div class="portal-title">
-        <strong>Personal Planning Portal</strong>
-        <small>Timetable workspace</small>
+        <strong>Campus Timetable</strong>
+        <small>PDF import · JSON export</small>
       </div>
       <div class="portal-status"><span></span> Saved locally</div>
     </header>
 
     <nav class="portal-nav" aria-label="Main navigation">
-      <button class="nav-item">Home</button>
-      <button class="nav-item">My Details</button>
-      <button class="nav-item">School Timetable</button>
-      <button class="nav-item active">Personal Timetable</button>
-      <button class="nav-item">Reports</button>
+      <button class="nav-item active" data-scroll="home">Home</button>
+      <button class="nav-item" data-scroll="timetableSection">Timetable</button>
+      <button class="nav-item" data-scroll="importSection">Import</button>
+      <button class="nav-item" data-scroll="howToUse">How to use</button>
+      <button class="nav-item" data-scroll="exportSection">Export</button>
     </nav>
 
     <main class="workspace">
-      <section class="page-heading">
+      <section class="page-heading" id="home">
         <div>
-          <p class="eyebrow">PERSONAL TIMETABLE</p>
-          <h1>My Personal Timetable</h1>
-          <p>Click a cell to edit. Every change is reflected in the wallpaper preview immediately.</p>
+          <p class="eyebrow">PUPIL TIMETABLE SYSTEM</p>
+          <h1>My Campus Timetable</h1>
+          <p>Import an iSAMS timetable PDF, review the recognised cells, then export a clean wallpaper.</p>
         </div>
         <div class="heading-actions">
-          <button id="importButton" class="button secondary">Import JSON</button>
+          <button id="importButton" class="button primary">Import PDF / JSON</button>
+          <button id="demoButton" class="button secondary">Load demo</button>
           <button id="exportJsonButton" class="button secondary">Export JSON</button>
           <button id="resetButton" class="button danger">Reset</button>
-          <input id="importInput" type="file" accept="application/json" hidden />
+          <input id="importInput" type="file" accept=".pdf,.json,application/pdf,application/json" hidden />
         </div>
       </section>
 
-      <div class="app-grid">
+      <section class="panel import-panel" id="importSection" aria-labelledby="importTitle">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">ONE-CLICK IMPORT</p>
+            <h2 id="importTitle">Bring in a timetable</h2>
+            <p>Use the PDF saved from iSAMS, or import this system's JSON format.</p>
+          </div>
+          <span class="format-badge">PDF → JSON</span>
+        </div>
+        <div class="import-body">
+          <button id="dropzone" class="dropzone" type="button">
+            <span class="dropzone-icon">↑</span>
+            <strong>Choose a PDF or JSON file</strong>
+            <small>Tap here, or drag a file onto this box</small>
+          </button>
+          <div id="importStatus" class="import-status" role="status">
+            Campus mode is active: only Reg and P1–P12 are kept.
+          </div>
+        </div>
+      </section>
+
+      <div class="app-grid" id="timetableSection">
         <section class="panel timetable-panel" aria-labelledby="tableTitle">
           <div class="panel-header">
             <div>
               <h2 id="tableTitle">Student timetable</h2>
-              <p>P1–P14 · Monday to Friday</p>
+              <p>Campus · Reg and P1–P12 · Monday to Friday</p>
             </div>
             <span class="live-badge">LIVE</span>
           </div>
@@ -75,16 +94,16 @@
             <div class="form-row">
               <label>
                 Teacher
-                <input id="teacherInput" type="text" placeholder="e.g. TCH" disabled />
+                <input id="teacherInput" type="text" placeholder="e.g. LCA" disabled />
               </label>
               <label>
                 Room
-                <input id="roomInput" type="text" placeholder="e.g. TBC" disabled />
+                <input id="roomInput" type="text" placeholder="e.g. A312" disabled />
               </label>
             </div>
             <label>
-              Note / actual time
-              <input id="noteInput" type="text" placeholder="e.g. 18:15–20:00" disabled />
+              Note
+              <input id="noteInput" type="text" placeholder="Optional note" disabled />
             </label>
             <div class="editor-actions">
               <button id="copyDownButton" type="button" class="button secondary" disabled>Copy to next period</button>
@@ -113,12 +132,12 @@
         </aside>
       </div>
 
-      <section class="panel export-panel" aria-labelledby="exportTitle">
+      <section class="panel export-panel" id="exportSection" aria-labelledby="exportTitle">
         <div class="panel-header export-header">
           <div>
             <p class="eyebrow">WALLPAPER GENERATOR</p>
-            <h2 id="exportTitle">Generate timetable wallpaper</h2>
-            <p>Native grey grid, generous line spacing and lock-screen-safe margins.</p>
+            <h2 id="exportTitle">Generate campus timetable wallpaper</h2>
+            <p>Fixed device proportions, safe margins, and the same grey grid language as the portal.</p>
           </div>
           <div class="export-controls">
             <label>
@@ -128,33 +147,67 @@
                 <option value="phone">Phone · 1080 × 2400</option>
               </select>
             </label>
-            <label>
-              Version
-              <select id="versionSelect">
-                <option value="full">Full day</option>
-                <option value="campus">Campus</option>
-              </select>
-            </label>
             <button id="downloadButton" class="button primary">Download PNG</button>
           </div>
         </div>
         <div class="preview-shell">
-          <canvas id="wallpaperCanvas" aria-label="Wallpaper preview"></canvas>
+          <canvas id="wallpaperCanvas" aria-label="Campus timetable wallpaper preview"></canvas>
         </div>
         <div class="quick-exports">
-          <button class="quick-export" data-device="ipad" data-version="full">iPad · Full day</button>
-          <button class="quick-export" data-device="ipad" data-version="campus">iPad · Campus</button>
-          <button class="quick-export" data-device="phone" data-version="full">Phone · Full day</button>
-          <button class="quick-export" data-device="phone" data-version="campus">Phone · Campus</button>
+          <button class="quick-export" data-device="ipad">iPad · Campus</button>
+          <button class="quick-export" data-device="phone">Phone · Campus</button>
+        </div>
+      </section>
+
+      <section class="panel guide-panel" id="howToUse" aria-labelledby="guideTitle">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">HOW TO USE</p>
+            <h2 id="guideTitle">Export from iSAMS, then import here</h2>
+            <p>The screenshots below show the exact iPad flow used for the demonstration PDF.</p>
+          </div>
+          <span class="format-badge">4 STEPS</span>
+        </div>
+        <div class="guide-grid">
+          <article class="guide-step">
+            <div class="step-number">1</div>
+            <img data-guide-image="0" alt="Open the Timetable section in the pupil portal" />
+            <h3>Open Timetable</h3>
+            <p>In the pupil portal, tap <strong>Timetable</strong> in the top navigation.</p>
+          </article>
+          <article class="guide-step">
+            <div class="step-number">2</div>
+            <img data-guide-image="1" alt="Open My Timetable in the pupil portal" />
+            <h3>Open My Timetable</h3>
+            <p>Choose <strong>My Timetable</strong>, then wait for the full Monday–Friday grid to load.</p>
+          </article>
+          <article class="guide-step">
+            <div class="step-number">3</div>
+            <img data-guide-image="2" alt="Use the iPad share menu to save the timetable PDF" />
+            <h3>Share the PDF</h3>
+            <p>Tap the browser share icon, select <strong>Pupil Portal | My Timetable</strong>, then choose <strong>Save to Files</strong>.</p>
+          </article>
+          <article class="guide-step">
+            <div class="step-number">4</div>
+            <img data-guide-image="3" alt="Save the timetable PDF to the iPad" />
+            <h3>Save and import</h3>
+            <p>Save the file somewhere easy to find, return here, and tap <strong>Import PDF / JSON</strong>.</p>
+          </article>
+        </div>
+        <div class="guide-note">
+          <strong>Demo:</strong> tap <em>Load demo</em> at the top to see a neutral sample timetable before importing your own file. PDF recognition keeps the Campus grid through P12 and ignores any later personal-planning rows.
         </div>
       </section>
     </main>
 
     <footer>
-      Personal planning tool · iSAMS-inspired interface · Not an official school service
+      Pupil Timetable System · iSAMS-compatible import · Not an official school service
     </footer>
 
-    <script src="logo-data.js?v=202609192130"></script>
-    <script src="app.js?v=202609192130"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="logo-data.js?v=202609192300"></script>
+    <script src="guide-data.js?v=202609192300"></script>
+    <script src="app.js?v=202609192300"></script>
   </body>
 </html>
+
