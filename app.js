@@ -99,8 +99,7 @@ function saveState() {
 }
 
 function cellLines(cell) {
-  const details = [cell.room, cell.note].filter(Boolean).join(" · ");
-  return [cell.course, cell.teacher, details].filter(Boolean);
+  return [cell.course, cell.teacher, cell.room, cell.note].filter(Boolean);
 }
 
 function renderTable() {
@@ -314,8 +313,8 @@ function drawWallpaper() {
   const device = deviceSelect.value;
   const full = versionSelect.value === "full";
   const config = device === "ipad"
-    ? { width: 2090, height: 3012, x: 120, y: 912, tableWidth: 1850, logoX: 94, logoY: 625, compact: false }
-    : { width: 1080, height: 2400, x: 80, y: 640, tableWidth: 920, logoX: 58, logoY: 473, compact: true };
+    ? { width: 1640, height: 2360, x: 70, y: 690, tableWidth: 1500, logoX: 72, logoY: 487, compact: false }
+    : { width: 1179, height: 2556, x: 42, y: 650, tableWidth: 1095, logoX: 44, logoY: 474, compact: true };
 
   canvas.width = config.width;
   canvas.height = config.height;
@@ -353,11 +352,19 @@ function drawBrand(ctx, config) {
 
 function drawCanvasTable(ctx, config, periods) {
   const { x, y, tableWidth, compact, height } = config;
-  const headerHeight = compact ? 44 : 73;
-  const bottomMargin = compact ? 120 : 105;
+  const headerHeight = compact ? 48 : 58;
+  const bottomMargin = compact ? 92 : 78;
   const available = height - y - bottomMargin - headerHeight;
-  const baseHeight = Math.floor(available / periods.length);
-  const timeWidth = Math.round(tableWidth * 0.092);
+  const rowWeights = periods.map((period) => {
+    if (period.label === "Reg") return 0.68;
+    if (period.label === "P13") return 0.82;
+    if (period.label === "P14") return 1.28;
+    if (period.label === "Transition") return 0.62;
+    if (["P15", "Home", "Sleep"].includes(period.label)) return 0.82;
+    return 1;
+  });
+  const weightTotal = rowWeights.reduce((sum, weight) => sum + weight, 0);
+  const timeWidth = Math.round(tableWidth * (compact ? 0.105 : 0.098));
   const dayWidth = (tableWidth - timeWidth) / 5;
   const lineWidth = compact ? 1.4 : 2.2;
   const grid = "#85898c";
@@ -381,7 +388,7 @@ function drawCanvasTable(ctx, config, periods) {
   ctx.stroke();
 
   ctx.fillStyle = "#3f4346";
-  ctx.font = `${compact ? 15 : 28}px Arial`;
+  ctx.font = `500 ${compact ? 17 : 23}px Arial`;
   ctx.fillText("P", x + timeWidth / 2, y + headerHeight / 2);
   DAYS.forEach((day, index) => {
     ctx.fillText(day, x + timeWidth + dayWidth * (index + 0.5), y + headerHeight / 2);
@@ -389,12 +396,10 @@ function drawCanvasTable(ctx, config, periods) {
 
   let currentY = y + headerHeight;
   periods.forEach((period, periodIndex) => {
-    let rowHeight = baseHeight;
-    if (period.label === "Reg") rowHeight = Math.round(baseHeight * 0.72);
-    if (["P13", "P14"].includes(period.label)) rowHeight = Math.round(baseHeight * 1.08);
-    if (periodIndex === periods.length - 1) {
-      rowHeight = Math.min(rowHeight, height - bottomMargin - currentY);
-    }
+    const remaining = height - bottomMargin - currentY;
+    const rowHeight = periodIndex === periods.length - 1
+      ? remaining
+      : Math.round((available * rowWeights[periodIndex]) / weightTotal);
 
     const shared = ["P13", "Transition", "P15", "Home", "Sleep"].includes(period.label);
     ctx.fillStyle = periodIndex % 2 === 0 ? "#fafafa" : "#ffffff";
@@ -436,20 +441,26 @@ function drawPeriodLabel(ctx, x, y, width, height, period, compact) {
   ctx.fillStyle = "#44484b";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.font = `${compact ? 13 : 24}px Arial`;
-  ctx.fillText(period.label, x + width / 2, y + height / 2 - (compact ? 7 : 12));
-  ctx.font = `${compact ? 11 : 20}px Arial`;
-  ctx.fillText(period.time, x + width / 2, y + height / 2 + (compact ? 8 : 14));
+  const labelSize = Math.max(compact ? 12 : 15, Math.min(compact ? 17 : 21, height * 0.23));
+  const timeSize = Math.max(compact ? 10 : 13, Math.min(compact ? 14 : 17, height * 0.18));
+  const separation = Math.max(8, height * 0.13);
+  ctx.font = `500 ${labelSize}px Arial`;
+  ctx.fillText(period.label, x + width / 2, y + height / 2 - separation);
+  ctx.font = `${timeSize}px Arial`;
+  ctx.fillText(period.time, x + width / 2, y + height / 2 + separation);
   ctx.restore();
 }
 
 function drawCanvasCell(ctx, x, y, width, height, cell, compact) {
   const lines = cellLines(cell);
   if (!lines.length) return;
-  const base = compact ? 18 : 29;
-  const sizes = lines.map((_, index) => Math.max(compact ? 11 : 18, base - index * (compact ? 3 : 4)));
-  const gap = compact ? 5 : 9;
-  const lineHeights = sizes.map((size) => size * 1.05);
+  const minimum = compact ? 10 : 13;
+  const maximum = compact ? 18 : 24;
+  const verticalBudget = height * 0.78;
+  const base = Math.max(minimum, Math.min(maximum, verticalBudget / Math.max(lines.length * 1.16, 1)));
+  const sizes = lines.map((_, index) => Math.max(minimum, base - (index === 0 ? 0 : compact ? 1 : 2)));
+  const gap = Math.max(compact ? 3 : 4, Math.min(compact ? 7 : 9, height * 0.055));
+  const lineHeights = sizes.map((size) => size * 1.12);
   const total = lineHeights.reduce((sum, value) => sum + value, 0) + gap * (lines.length - 1);
   let cursor = y + (height - total) / 2;
 
@@ -459,10 +470,10 @@ function drawCanvasCell(ctx, x, y, width, height, cell, compact) {
   ctx.textBaseline = "top";
   lines.forEach((line, index) => {
     let size = sizes[index];
-    ctx.font = `${size}px Arial`;
-    while (ctx.measureText(line).width > width - (compact ? 10 : 18) && size > (compact ? 9 : 14)) {
+    ctx.font = `${index === 0 ? 500 : 400} ${size}px Arial`;
+    while (ctx.measureText(line).width > width - (compact ? 16 : 22) && size > (compact ? 9 : 12)) {
       size -= 1;
-      ctx.font = `${size}px Arial`;
+      ctx.font = `${index === 0 ? 500 : 400} ${size}px Arial`;
     }
     ctx.fillText(line, x + width / 2, cursor);
     cursor += lineHeights[index] + gap;
