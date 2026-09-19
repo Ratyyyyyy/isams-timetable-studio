@@ -530,6 +530,34 @@ footer {
 }
 
 .course-tools-panel, .fun-panel { margin-top: 14px; }
+.batch-entry-layout { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(310px,.75fr); gap:0; }
+.batch-grid-card, .batch-form-card { padding:14px; }
+.batch-form-card { border-left:1px solid #d0d4d7; background:#fbfbfb; }
+.batch-selection-actions, .batch-form-actions { display:flex; gap:7px; flex-wrap:wrap; }
+.batch-grid-wrap { overflow:auto; border:1px solid #c4c9cd; }
+.batch-grid { width:100%; min-width:760px; border-collapse:collapse; table-layout:fixed; font-size:11px; }
+.batch-grid th, .batch-grid td { border:1px solid #aeb5ba; }
+.batch-grid thead th { height:34px; background:#dfe2e4; color:#34383c; font-size:12px; }
+.batch-grid thead th:first-child { width:76px; }
+.batch-grid .period-cell { width:76px; padding:5px 3px; background:#f1f2f3; font-size:11px; }
+.batch-grid .period-cell span { display:block; margin-top:2px; color:#697177; font-size:9px; font-weight:400; }
+.batch-cell { position:relative; display:flex; min-height:54px; align-items:center; justify-content:center; padding:5px; background:#fff; cursor:pointer; }
+.batch-grid tbody tr:nth-child(odd) .batch-cell { background:#f7f7f7; }
+.batch-cell input { position:absolute; top:5px; left:5px; width:14px; height:14px; }
+.batch-cell:has(input:checked) { background:#dcecf6 !important; box-shadow:inset 0 0 0 2px #2a77a9; }
+.batch-cell-content { display:block; max-width:100%; padding:10px 2px 0; text-align:center; }
+.batch-cell-content strong, .batch-cell-content small { display:block; overflow-wrap:anywhere; }
+.batch-cell-content strong { font-size:10px; font-weight:600; }
+.batch-cell-content small { margin-top:2px; color:#6a7177; font-size:9px; }
+.batch-empty { color:#9aa1a6; font-weight:400; }
+.batch-form-card label { display:grid; gap:5px; margin-bottom:12px; color:#50565b; font-size:11px; font-weight:600; }
+.batch-form-card input { min-height:35px; }
+.batch-form-card .form-row { margin-bottom:0; }
+.batch-form-card .check-line { display:flex; align-items:center; gap:7px; }
+.batch-form-card .check-line input { width:15px; min-height:0; }
+.batch-form-actions { margin-top:4px; }
+.batch-form-actions .button { flex:1 1 150px; }
+.batch-grid-card .form-hint { margin:9px 0 0; }
 .course-tools-grid { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr); }
 .course-stats-card, .course-add-card { padding:14px; }
 .course-add-card { border-left:1px solid #d0d4d7; background:#fbfbfb; }
@@ -579,6 +607,8 @@ footer {
     grid-template-columns: 1fr;
   }
   .course-tools-grid { grid-template-columns:1fr; }
+  .batch-entry-layout { grid-template-columns:1fr; }
+  .batch-form-card { border-left:0; border-top:1px solid #d0d4d7; }
   .course-add-card { border-left:0; border-top:1px solid #d0d4d7; }
   .fun-results { grid-template-columns:1fr; }
   .portal-shortcuts { grid-template-columns:repeat(2,minmax(0,1fr)); }
@@ -881,4 +911,6 @@ footer {
     grid-template-columns: 1fr;
   }
   .portal-shortcuts { grid-template-columns:1fr; }
+  .batch-selection-actions { width:100%; }
+  .batch-selection-actions .button { flex:1 1 120px; }
 }

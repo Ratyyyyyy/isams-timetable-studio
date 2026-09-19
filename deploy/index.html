@@ -4,16 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#00365d" />
-    <title>Pupil Timetable System</title>
-    <link rel="stylesheet" href="styles.css?v=202609192800" />
+    <title>趣味课表 · Pupil Timetable System</title>
+    <link rel="stylesheet" href="styles.css?v=202609192830" />
   </head>
   <body>
     <header class="portal-header">
       <div class="isams-brand" aria-label="Pupil Timetable System">
-        <strong>Pupil Timetable System</strong>
+        <strong>趣味课表</strong>
       </div>
       <div class="portal-title">
-        <strong>Campus Timetable</strong>
+        <strong>Pupil Timetable System</strong>
         <small>PDF import · JSON export</small>
       </div>
       <div class="portal-status"><span></span> Saved locally</div>
@@ -22,8 +22,8 @@
     <nav class="portal-nav" aria-label="Main navigation">
       <button class="nav-item active" data-page="home">Home</button>
       <button class="nav-item" data-page="timetable">Timetable</button>
-      <button class="nav-item" data-page="courses">Courses</button>
-      <button class="nav-item" data-page="fun">可选方案</button>
+      <button class="nav-item" data-page="courses">Batch entry</button>
+      <button class="nav-item" data-page="fun">Options</button>
       <button class="nav-item" data-page="import">Import</button>
       <button class="nav-item" data-page="export">Export</button>
       <button class="nav-item" data-page="help">How to use</button>
@@ -35,8 +35,8 @@
         <div class="portal-shortcuts">
           <button class="portal-shortcut" data-page="import"><img src="assets/portal-icon-3.jpg" alt="" /><span><strong>Import timetable</strong><small>PDF / JSON</small></span></button>
           <button class="portal-shortcut" data-page="timetable"><img src="assets/portal-icon-4.jpg" alt="" /><span><strong>My timetable</strong><small>View and edit cells</small></span></button>
-          <button class="portal-shortcut" data-page="courses"><img src="assets/portal-icon-5.jpg" alt="" /><span><strong>Course management</strong><small>Blocks and standing lessons</small></span></button>
-          <button class="portal-shortcut" data-page="fun"><img src="assets/portal-icon-1.jpg" alt="" /><span><strong>可选方案</strong><small>Fantasy arrangements</small></span></button>
+          <button class="portal-shortcut" data-page="courses"><img src="assets/portal-icon-5.jpg" alt="" /><span><strong>Batch entry</strong><small>Fill multiple timetable cells</small></span></button>
+          <button class="portal-shortcut" data-page="fun"><img src="assets/portal-icon-1.jpg" alt="" /><span><strong>Options</strong><small>Simulated arrangements</small></span></button>
           <button class="portal-shortcut" data-page="export"><img src="assets/portal-icon-6.jpg" alt="" /><span><strong>Wallpaper export</strong><small>iPad / phone</small></span></button>
           <button class="portal-shortcut" data-page="help"><img src="assets/portal-icon-2.jpg" alt="" /><span><strong>How to use</strong><small>Step-by-step guide</small></span></button>
         </div>
@@ -135,45 +135,26 @@
       <section class="panel course-tools-panel page-section" id="courseTools" data-page-section="courses" aria-labelledby="courseToolsTitle">
         <div class="panel-header">
           <div>
-            <p class="eyebrow">COURSE TOOLS</p>
-            <h2 id="courseToolsTitle">Course blocks &amp; quick add</h2>
-            <p>先看每门课出现多少次；再把识别出的课程块批量复制，或手动添加一个课时。</p>
+            <p class="eyebrow">TEACHER PORTAL · BATCH ENTRY</p>
+            <h2 id="courseToolsTitle">Class timetable entry</h2>
+            <p>Select timetable cells, enter the lesson details once, then apply them to all selected cells.</p>
           </div>
-          <span class="format-badge">LOCAL ONLY</span>
+          <span class="format-badge">MULTI-CELL EDIT</span>
         </div>
-        <div class="course-tools-grid">
-          <div class="course-stats-card">
-            <div class="subheading"><h3>Course statistics</h3><span id="courseStatsTotal" class="muted-label">0 courses</span></div>
-            <div class="table-wrap compact-wrap"><table id="courseStatsTable" class="course-stats-table"></table></div>
+        <div class="batch-entry-layout">
+          <div class="batch-grid-card">
+            <div class="subheading"><div><p class="eyebrow">CELL SELECTION</p><h3>Choose cells to fill</h3></div><div class="batch-selection-actions"><button id="batchSelectAllButton" type="button" class="button secondary">Select all</button><button id="batchClearSelectionButton" type="button" class="button secondary">Clear selection</button></div></div>
+            <div id="batchGrid" class="batch-grid-wrap"></div>
+            <p id="batchSelectionStatus" class="form-hint">No cells selected.</p>
           </div>
-          <div class="course-add-card">
-            <div class="mode-switch" role="tablist" aria-label="Course add mode">
-              <button type="button" class="mode-tab active" data-add-mode="bulk">Bulk add from blocks</button>
-              <button type="button" class="mode-tab" data-add-mode="manual">Manual add</button>
-            </div>
-            <div id="bulkAddPane" class="add-pane">
-              <label>Detected course
-                <select id="bulkCourseSelect"><option value="">No course blocks detected</option></select>
-              </label>
-              <label>Block to repeat
-                <select id="bulkBlockSelect"><option value="">Choose a course first</option></select>
-              </label>
-              <div class="weekday-checks" id="bulkDayChecks"></div>
-              <label class="check-line"><input id="bulkStandingInput" type="checkbox" /> Mark these as standing lessons</label>
-              <button id="bulkAddButton" type="button" class="button primary">Add selected block</button>
-              <p id="bulkAddHint" class="form-hint">课程块来自当前课表；批量添加不会改变原有课程定义。</p>
-            </div>
-            <div id="manualAddPane" class="add-pane hidden">
-              <div class="form-row">
-                <label>Day<select id="manualDaySelect"></select></label>
-                <label>Period<select id="manualPeriodSelect"></select></label>
-              </div>
-              <label>Course / activity<input id="manualCourseInput" type="text" placeholder="e.g. Chemistry" /></label>
-              <div class="form-row"><label>Teacher<input id="manualTeacherInput" type="text" placeholder="e.g. LCA" /></label><label>Room<input id="manualRoomInput" type="text" placeholder="e.g. A312" /></label></div>
-              <label>Note<input id="manualNoteInput" type="text" placeholder="Optional note" /></label>
-              <label class="check-line"><input id="manualStandingInput" type="checkbox" /> Make this a standing lesson</label>
-              <button id="manualAddButton" type="button" class="button primary">Add lesson</button>
-            </div>
+          <div class="batch-form-card">
+            <div class="subheading"><div><p class="eyebrow">LESSON DETAILS</p><h3>Apply to selected cells</h3></div></div>
+            <label>Course / activity<input id="batchCourseInput" type="text" placeholder="e.g. Chemistry" /></label>
+            <div class="form-row"><label>Teacher<input id="batchTeacherInput" type="text" placeholder="e.g. LCA" /></label><label>Room<input id="batchRoomInput" type="text" placeholder="e.g. A312" /></label></div>
+            <label>Note<input id="batchNoteInput" type="text" placeholder="Optional note" /></label>
+            <label class="check-line"><input id="batchStandingInput" type="checkbox" /> Mark selected cells as standing lessons</label>
+            <div class="batch-form-actions"><button id="batchApplyButton" type="button" class="button primary">Apply to selected</button><button id="batchClearCellsButton" type="button" class="button danger">Clear selected cells</button></div>
+            <p class="form-hint">This mirrors teacher-style multi-cell entry: select cells first, then apply one lesson record to the selection.</p>
           </div>
         </div>
       </section>
@@ -181,23 +162,23 @@
       <section class="panel fun-panel page-section" id="funPlanner" data-page-section="fun" aria-labelledby="funPlannerTitle">
         <div class="panel-header">
           <div>
-            <p class="eyebrow">可选方案 · 仅供娱乐</p>
-            <h2 id="funPlannerTitle">可选方案</h2>
-            <p>选择一个方案查看模拟课表；它只用于比较，不会修改真实课表，也不能下载。</p>
+            <p class="eyebrow">OPTION SET · FOR FUN ONLY</p>
+            <h2 id="funPlannerTitle">Option set</h2>
+            <p>Select an option to preview a simulated timetable. It never changes or downloads your real timetable.</p>
           </div>
           <div class="fun-controls">
-            <label>可选方案
+            <label>Option
               <select id="funScenarioSelect">
-                <option value="early">全部排早课</option>
-                <option value="friday">周五尽早放学</option>
-                <option value="compact">每天减少空档</option>
+                <option value="early">All lessons early</option>
+                <option value="friday">Finish Friday early</option>
+                <option value="compact">Reduce daily gaps</option>
               </select>
             </label>
-            <button id="runFunPlannerButton" type="button" class="button secondary">生成方案</button>
+            <button id="runFunPlannerButton" type="button" class="button secondary">Generate option</button>
           </div>
         </div>
         <div id="funPlannerResults" class="fun-results" aria-live="polite">
-          <div class="empty-state">选择方案后，这里会显示对应的模拟课表和摘要。</div>
+          <div class="empty-state">Choose an option to see its simulated timetable and summary.</div>
         </div>
         <div id="funPreview" class="fun-preview" aria-live="polite"></div>
       </section>
@@ -280,8 +261,8 @@
 
     <input id="importInput" type="file" accept=".pdf,.json,application/pdf,application/json" hidden />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="logo-data.js?v=202609192800"></script>
-    <script src="guide-data.js?v=202609192800"></script>
-    <script src="app.js?v=202609192800"></script>
+    <script src="logo-data.js?v=202609192830"></script>
+    <script src="guide-data.js?v=202609192830"></script>
+    <script src="app.js?v=202609192830"></script>
   </body>
 </html>

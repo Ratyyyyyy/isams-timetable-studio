@@ -201,6 +201,13 @@ const manualNoteInput = document.querySelector("#manualNoteInput");
 const manualStandingInput = document.querySelector("#manualStandingInput");
 const manualAddButton = document.querySelector("#manualAddButton");
 const funScenarioSelect = document.querySelector("#funScenarioSelect");
+const batchGrid = document.querySelector("#batchGrid");
+const batchSelectionStatus = document.querySelector("#batchSelectionStatus");
+const batchCourseInput = document.querySelector("#batchCourseInput");
+const batchTeacherInput = document.querySelector("#batchTeacherInput");
+const batchRoomInput = document.querySelector("#batchRoomInput");
+const batchNoteInput = document.querySelector("#batchNoteInput");
+const batchStandingInput = document.querySelector("#batchStandingInput");
 const logoImage = new Image();
 if (window.UCS_LOGO_DATA) logoImage.src = window.UCS_LOGO_DATA;
 
@@ -260,6 +267,53 @@ function renderTable() {
       selectPeriod(Number(cell.dataset.periodIndex));
     });
   });
+  renderBatchGrid();
+}
+
+function selectedBatchCells() {
+  return batchGrid ? Array.from(batchGrid.querySelectorAll("input[data-batch-cell]:checked")).map(function (input) { return input.dataset.batchCell; }) : [];
+}
+
+function updateBatchSelectionStatus() {
+  if (batchSelectionStatus) {
+    const count = selectedBatchCells().length;
+    batchSelectionStatus.textContent = count ? count + " cell" + (count === 1 ? "" : "s") + " selected." : "No cells selected.";
+  }
+}
+
+function renderBatchGrid() {
+  if (!batchGrid) return;
+  const header = "<table class=\"batch-grid\"><thead><tr><th>P</th>" + DAYS.map(function (day) { return "<th>" + day + "</th>"; }).join("") + "</tr></thead><tbody>";
+  const rows = state.periods.map(function (period) {
+    const cells = DAYS.map(function (day) {
+      const cell = getCell(period.label, day);
+      const label = cell.course ? escapeHtml(cell.course) : "<span class=\"batch-empty\">Empty</span>";
+      return "<td><label class=\"batch-cell\"><input type=\"checkbox\" data-batch-cell=\"" + escapeHtml(key(period.label, day)) + " /><span class=\"batch-cell-content\"><strong>" + label + "</strong><small>" + escapeHtml([cell.teacher, cell.room].filter(Boolean).join(" · ")) + "</small></span></label></td>";
+    }).join("");
+    return "<tr><th class=\"period-cell\">" + escapeHtml(period.label) + "<span>" + escapeHtml(period.time) + "</span></th>" + cells + "</tr>";
+  }).join("");
+  batchGrid.innerHTML = header + rows + "</tbody></table>";
+  batchGrid.querySelectorAll("input[data-batch-cell]").forEach(function (input) { input.addEventListener("change", updateBatchSelectionStatus); });
+  updateBatchSelectionStatus();
+}
+
+function applyBatchEntry(clearOnly) {
+  const selected = selectedBatchCells();
+  if (!selected.length) { if (batchSelectionStatus) batchSelectionStatus.textContent = "Select at least one cell first."; return; }
+  selected.forEach(function (cellKey) {
+    if (clearOnly) {
+      delete state.cells[cellKey];
+      delete state.standingCourses[cellKey];
+    } else {
+      state.cells[cellKey] = lesson(batchCourseInput.value.trim(), batchTeacherInput.value.trim(), batchRoomInput.value.trim(), batchNoteInput.value.trim());
+      if (batchStandingInput.checked) state.standingCourses[cellKey] = true;
+      else delete state.standingCourses[cellKey];
+    }
+  });
+  saveState();
+  renderTable();
+  drawWallpaper();
+  if (batchSelectionStatus) batchSelectionStatus.textContent = (clearOnly ? "Cleared " : "Applied lesson to ") + selected.length + " selected cell" + (selected.length === 1 ? "" : "s") + ".";
 }
 
 function renderLessonCell(period, day, cell) {
@@ -528,12 +582,12 @@ function runFunPlanner() {
   const earlyShare = occupied.length ? Math.round(occupied.filter(function (item) { return /^P[1-4]$/.test(item.key.split("|")[0]); }).length / occupied.length * 100) : 0;
   const scenario = funScenarioSelect ? funScenarioSelect.value : "early";
   const cards = [
-    ["All classes early", "Pack each day's lessons from P1 upward.", counts.map(latest).join(" / "), "The week would keep the same lesson counts, but every day starts as early as possible."],
+    ["All lessons early", "Pack each day's lessons from P1 upward.", counts.map(latest).join(" / "), "The week keeps the same lesson counts, but every day starts as early as possible."],
     ["Friday finish first", "Compress Friday to the earliest available periods.", latest(friday), friday ? "Friday's last class would be " + latest(friday) + "." : "Friday is already free."],
-    ["Most compact week", "Remove gaps inside each day while keeping day totals.", counts.reduce(function (sum, count) { return sum + count; }, 0) + " lessons", "This is the cleanest fantasy layout for reducing idle gaps; it does not move or download your real data."],
+    ["Fewest daily gaps", "Remove gaps inside each day while keeping day totals.", counts.reduce(function (sum, count) { return sum + count; }, 0) + " lessons", "This is a simulated layout for reducing idle gaps; it does not move or download your real data."],
   ];
   const container = document.querySelector("#funPlannerResults");
-  if (container) container.innerHTML = cards.map(function (card) { return "<article class=\"fun-card\"><p class=\"eyebrow\">" + escapeHtml(card[0]) + "</p><h3>" + escapeHtml(card[2]) + "</h3><p>" + escapeHtml(card[1]) + "</p><small>" + escapeHtml(card[3]) + "</small></article>"; }).join("") + "<p class=\"fun-footnote\">当前真实课表：" + occupied.length + " 个课时 · P1–P4 占比 " + earlyShare + "%。下方为所选方案的模拟课表。</p>";
+  if (container) container.innerHTML = cards.map(function (card) { return "<article class=\"fun-card\"><p class=\"eyebrow\">" + escapeHtml(card[0]) + "</p><h3>" + escapeHtml(card[2]) + "</h3><p>" + escapeHtml(card[1]) + "</p><small>" + escapeHtml(card[3]) + "</small></article>"; }).join("") + "<p class=\"fun-footnote\">Current timetable: " + occupied.length + " occupied lesson cells · P1–P4 share " + earlyShare + "%. The selected option is previewed below.</p>";
   renderFunPreview(scenario);
 }
 
@@ -563,7 +617,7 @@ function renderFunPreview(scenario) {
   const preview = document.querySelector("#funPreview");
   if (!preview) return;
   const fantasy = fantasyCells(scenario);
-  const header = "<div class=\"fun-preview-heading\"><strong>模拟课表预览</strong><span>只显示方案结果，不写回真实课表</span></div>";
+  const header = "<div class=\"fun-preview-heading\"><strong>Simulated timetable preview</strong><span>Preview only · the real timetable is unchanged</span></div>";
   const tableHead = "<thead><tr><th>P</th>" + DAYS.map(function (day) { return "<th>" + day + "</th>"; }).join("") + "</tr></thead>";
   const rows = state.periods.map(function (period) {
     const cells = DAYS.map(function (day) {
@@ -585,6 +639,20 @@ document.querySelectorAll("[data-add-mode]").forEach(function (button) {
 if (bulkCourseSelect) bulkCourseSelect.addEventListener("change", updateBulkBlocks);
 if (bulkAddButton) bulkAddButton.addEventListener("click", addBulkBlock);
 if (manualAddButton) manualAddButton.addEventListener("click", addManualLesson);
+const batchApplyButton = document.querySelector("#batchApplyButton");
+const batchClearCellsButton = document.querySelector("#batchClearCellsButton");
+const batchSelectAllButton = document.querySelector("#batchSelectAllButton");
+const batchClearSelectionButton = document.querySelector("#batchClearSelectionButton");
+if (batchApplyButton) batchApplyButton.addEventListener("click", function () { applyBatchEntry(false); });
+if (batchClearCellsButton) batchClearCellsButton.addEventListener("click", function () { applyBatchEntry(true); });
+if (batchSelectAllButton) batchSelectAllButton.addEventListener("click", function () {
+  batchGrid.querySelectorAll("input[data-batch-cell]").forEach(function (input) { input.checked = true; });
+  updateBatchSelectionStatus();
+});
+if (batchClearSelectionButton) batchClearSelectionButton.addEventListener("click", function () {
+  batchGrid.querySelectorAll("input[data-batch-cell]").forEach(function (input) { input.checked = false; });
+  updateBatchSelectionStatus();
+});
 const runFunPlannerButton = document.querySelector("#runFunPlannerButton");
 if (runFunPlannerButton) runFunPlannerButton.addEventListener("click", runFunPlanner);
 if (funScenarioSelect) funScenarioSelect.addEventListener("change", runFunPlanner);
