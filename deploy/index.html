@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#00365d" />
-    <title>趣味课表 · Pupil Timetable System</title>
+    <title>Pupil Timetable System</title>
     <link rel="stylesheet" href="styles.css?v=202609192830" />
   </head>
   <body>
     <header class="portal-header">
       <div class="isams-brand" aria-label="Pupil Timetable System">
-        <strong>趣味课表</strong>
+        <strong>Pupil Timetable System</strong>
       </div>
       <div class="portal-title">
         <strong>Pupil Timetable System</strong>
@@ -23,7 +23,7 @@
       <button class="nav-item active" data-page="home">Home</button>
       <button class="nav-item" data-page="timetable">Timetable</button>
       <button class="nav-item" data-page="courses">Batch entry</button>
-      <button class="nav-item" data-page="fun">Options</button>
+      <button class="nav-item" data-page="fun">Fun Timetable</button>
       <button class="nav-item" data-page="import">Import</button>
       <button class="nav-item" data-page="export">Export</button>
       <button class="nav-item" data-page="help">How to use</button>
@@ -36,7 +36,7 @@
           <button class="portal-shortcut" data-page="import"><img src="assets/portal-icon-3.jpg" alt="" /><span><strong>Import timetable</strong><small>PDF / JSON</small></span></button>
           <button class="portal-shortcut" data-page="timetable"><img src="assets/portal-icon-4.jpg" alt="" /><span><strong>My timetable</strong><small>View and edit cells</small></span></button>
           <button class="portal-shortcut" data-page="courses"><img src="assets/portal-icon-5.jpg" alt="" /><span><strong>Batch entry</strong><small>Fill multiple timetable cells</small></span></button>
-          <button class="portal-shortcut" data-page="fun"><img src="assets/portal-icon-1.jpg" alt="" /><span><strong>Options</strong><small>Simulated arrangements</small></span></button>
+          <button class="portal-shortcut" data-page="fun"><img src="assets/portal-icon-1.jpg" alt="" /><span><strong>Fun timetable</strong><small>Simulated arrangements</small></span></button>
           <button class="portal-shortcut" data-page="export"><img src="assets/portal-icon-6.jpg" alt="" /><span><strong>Wallpaper export</strong><small>iPad / phone</small></span></button>
           <button class="portal-shortcut" data-page="help"><img src="assets/portal-icon-2.jpg" alt="" /><span><strong>How to use</strong><small>Step-by-step guide</small></span></button>
         </div>
@@ -162,8 +162,8 @@
       <section class="panel fun-panel page-section" id="funPlanner" data-page-section="fun" aria-labelledby="funPlannerTitle">
         <div class="panel-header">
           <div>
-            <p class="eyebrow">OPTION SET · FOR FUN ONLY</p>
-            <h2 id="funPlannerTitle">Option set</h2>
+            <p class="eyebrow">FUN TIMETABLE · FOR FUN ONLY</p>
+            <h2 id="funPlannerTitle">Fun timetable</h2>
             <p>Select an option to preview a simulated timetable. It never changes or downloads your real timetable.</p>
           </div>
           <div class="fun-controls">
@@ -247,6 +247,38 @@
             <img data-guide-image="3" alt="Save the timetable PDF to the iPad" />
             <h3>Save and import</h3>
             <p>Save the file somewhere easy to find, return here, and tap <strong>Import PDF / JSON</strong>.</p>
+          </article>
+        </div>
+        <div class="guide-actions">
+          <article class="guide-action">
+            <p class="eyebrow">STEP 1 · IMPORT</p>
+            <h3>Bring in your timetable</h3>
+            <p>Open <strong>Import</strong>, choose the PDF exported from iSAMS or a compatible JSON file, and wait for the import confirmation.</p>
+            <p class="guide-action-note">PDF rows are read into the Campus grid. Reg–P12 are always available; P13/P14 stay blank when the source does not contain them.</p>
+          </article>
+          <article class="guide-action">
+            <p class="eyebrow">STEP 2 · CHECK</p>
+            <h3>Review the timetable</h3>
+            <p>Open <strong>Timetable</strong> to check each day, period, teacher and room. Tap a lesson cell to edit it in <strong>Cell Editor</strong>.</p>
+            <p class="guide-action-note">Use <strong>Load demo</strong> to inspect the layout before importing your own data.</p>
+          </article>
+          <article class="guide-action">
+            <p class="eyebrow">STEP 3 · BATCH ENTRY</p>
+            <h3>Fill several cells at once</h3>
+            <p>Open <strong>Batch entry</strong>, select the required cells, enter the lesson details once, then choose <strong>Apply to selected</strong>.</p>
+            <p class="guide-action-note">Use <strong>Mark selected cells as standing lessons</strong> when the lesson should remain a regular weekly entry.</p>
+          </article>
+          <article class="guide-action">
+            <p class="eyebrow">STEP 4 · FUN TIMETABLE</p>
+            <h3>Preview a different arrangement</h3>
+            <p>Open <strong>Fun Timetable</strong>, choose an option, and select <strong>Generate option</strong> to see a simulated timetable.</p>
+            <p class="guide-action-note">This page is for comparison only. It never changes your real timetable and has no download action.</p>
+          </article>
+          <article class="guide-action">
+            <p class="eyebrow">STEP 5 · EXPORT</p>
+            <h3>Create a device wallpaper</h3>
+            <p>Open <strong>Export</strong>, choose your device and timetable format, check the preview, then choose <strong>Download PNG</strong>.</p>
+            <p class="guide-action-note">Use <strong>Native timetable · Reg–P12</strong> for the school-only format, or <strong>Campus + P13/P14</strong> when you want the extended evening rows.</p>
           </article>
         </div>
         <div class="guide-note">

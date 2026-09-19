@@ -878,6 +878,37 @@ footer {
   font-size: 12px;
   line-height: 1.5;
 }
+.guide-actions {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  padding: 0 14px 14px;
+}
+.guide-action {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #c8cdd1;
+  background: linear-gradient(#fff, #f2f4f5);
+}
+.guide-action h3 {
+  margin: 7px 0 8px;
+  color: #34383c;
+  font-size: 14px;
+  font-weight: 600;
+}
+.guide-action p:not(.eyebrow) {
+  margin: 0;
+  color: #59636a;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.guide-action-note {
+  margin-top: 9px !important;
+  padding-top: 8px;
+  border-top: 1px solid #d9dddf;
+  color: #737c81 !important;
+  font-size: 10px !important;
+}
 .saved-pulse {
   animation: savedPulse 420ms ease-out;
 }
@@ -895,6 +926,9 @@ footer {
   .guide-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .guide-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 @media (max-width: 760px) {
   .isams-brand > strong {
@@ -908,6 +942,9 @@ footer {
     grid-template-columns: 1fr;
   }
   .guide-grid {
+    grid-template-columns: 1fr;
+  }
+  .guide-actions {
     grid-template-columns: 1fr;
   }
   .portal-shortcuts { grid-template-columns:1fr; }
