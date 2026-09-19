@@ -313,8 +313,8 @@ function drawWallpaper() {
   const device = deviceSelect.value;
   const full = versionSelect.value === "full";
   const config = device === "ipad"
-    ? { width: 1640, height: 2360, x: 70, y: 690, tableWidth: 1500, logoX: 72, logoY: 487, compact: false }
-    : { width: 1179, height: 2556, x: 42, y: 650, tableWidth: 1095, logoX: 44, logoY: 474, compact: true };
+    ? { width: 2048, height: 2732, x: 112, y: 820, tableWidth: 1824, logoX: 112, logoY: 642, logoScale: 1.32, bottomMargin: 155, compact: false }
+    : { width: 1080, height: 2400, x: 36, y: 455, tableWidth: 1008, logoX: 36, logoY: 338, logoScale: 0.92, bottomMargin: 365, compact: true };
 
   canvas.width = config.width;
   canvas.height = config.height;
@@ -329,31 +329,60 @@ function drawWallpaper() {
 }
 
 function drawBrand(ctx, config) {
-  const s = config.compact ? 0.62 : 1;
+  const s = config.logoScale;
   const x = config.logoX;
   const y = config.logoY;
   ctx.save();
-  ctx.fillStyle = "#ec302f";
-  ctx.fillRect(x, y, 15 * s, 104 * s);
-  ctx.fillStyle = "#15469a";
-  ctx.fillRect(x + 25 * s, y, 16 * s, 118 * s);
-  ctx.fillStyle = "#ec302f";
-  ctx.fillRect(x + 53 * s, y, 15 * s, 104 * s);
-  ctx.fillStyle = "#15469a";
-  ctx.font = `700 ${34 * s}px Arial`;
+  ctx.translate(x, y);
+  ctx.scale(s, s);
+
+  // Complete five-stroke UCS mark. The outer and inner strokes taper into
+  // the characteristic U-shape instead of ending as plain rectangles.
+  ctx.fillStyle = "#ee242b";
+  ctx.beginPath();
+  ctx.moveTo(0, 0); ctx.lineTo(15, 0); ctx.lineTo(15, 72);
+  ctx.quadraticCurveTo(15, 88, 27, 101); ctx.lineTo(27, 116);
+  ctx.quadraticCurveTo(0, 98, 0, 72); ctx.closePath(); ctx.fill();
+
+  ctx.fillStyle = "#123f91";
+  ctx.beginPath();
+  ctx.moveTo(32, 0); ctx.lineTo(49, 0); ctx.lineTo(49, 104);
+  ctx.quadraticCurveTo(49, 115, 61, 122); ctx.lineTo(61, 139);
+  ctx.quadraticCurveTo(32, 126, 32, 104); ctx.closePath(); ctx.fill();
+
+  ctx.fillStyle = "#ee242b";
+  ctx.beginPath();
+  ctx.moveTo(68, 81); ctx.lineTo(85, 81); ctx.lineTo(85, 141);
+  ctx.quadraticCurveTo(76.5, 145, 68, 141); ctx.closePath(); ctx.fill();
+
+  ctx.fillStyle = "#123f91";
+  ctx.beginPath();
+  ctx.moveTo(92, 0); ctx.lineTo(109, 0); ctx.lineTo(109, 104);
+  ctx.quadraticCurveTo(109, 126, 80, 139); ctx.lineTo(80, 122);
+  ctx.quadraticCurveTo(92, 115, 92, 104); ctx.closePath(); ctx.fill();
+
+  ctx.fillStyle = "#ee242b";
+  ctx.beginPath();
+  ctx.moveTo(126, 0); ctx.lineTo(141, 0); ctx.lineTo(141, 72);
+  ctx.quadraticCurveTo(141, 98, 114, 116); ctx.lineTo(114, 101);
+  ctx.quadraticCurveTo(126, 88, 126, 72); ctx.closePath(); ctx.fill();
+
+  ctx.fillStyle = "#123f91";
+  ctx.font = "700 38px Arial";
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
-  ctx.fillText("ULINK", x + 85 * s, y + 9 * s);
-  ctx.fillText("COLLEGE", x + 85 * s, y + 42 * s);
-  ctx.font = `400 ${23 * s}px Arial`;
-  ctx.fillText("SHANGHAI", x + 85 * s, y + 78 * s);
+  ctx.fillText("ULINK", 166, 6);
+  ctx.fillText("COLLEGE", 166, 43);
+  ctx.fillStyle = "#667080";
+  ctx.font = "500 25px Arial";
+  ctx.fillText("SHANGHAI", 166, 84);
   ctx.restore();
 }
 
 function drawCanvasTable(ctx, config, periods) {
   const { x, y, tableWidth, compact, height } = config;
   const headerHeight = compact ? 48 : 58;
-  const bottomMargin = compact ? 92 : 78;
+  const bottomMargin = config.bottomMargin;
   const available = height - y - bottomMargin - headerHeight;
   const rowWeights = periods.map((period) => {
     if (period.label === "Reg") return 0.68;
