@@ -1107,6 +1107,10 @@ function showPage(page) {
 document.querySelectorAll("[data-page]").forEach(function (button) {
   button.addEventListener("click", function () {
     showPage(button.dataset.page);
+    if (button.dataset.homeHelp === "true") {
+      const guide = document.querySelector("#howToUse");
+      if (guide) guide.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   });
 });
 

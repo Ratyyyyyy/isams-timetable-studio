@@ -26,7 +26,6 @@
       <button class="nav-item" data-page="fun">趣味排课</button>
       <button class="nav-item" data-page="import">Import</button>
       <button class="nav-item" data-page="export">Export</button>
-      <button class="nav-item" data-page="help">How to use</button>
     </nav>
 
     <main class="workspace">
@@ -37,11 +36,19 @@
           <p>Import an iSAMS timetable PDF, review the recognised cells, then export a clean wallpaper.</p>
         </div>
         <div class="heading-actions">
-          <button id="importButton" class="button primary">Import PDF / JSON</button>
-          <button id="demoButton" class="button secondary">Load demo</button>
-          <button id="exportJsonButton" class="button secondary">Export JSON</button>
-          <button id="resetButton" class="button danger">Reset</button>
-          <input id="importInput" type="file" accept=".pdf,.json,application/pdf,application/json" hidden />
+          <button class="button primary" data-page="import">Start with Import</button>
+        </div>
+      </section>
+
+      <section class="panel portal-home-tools page-section" data-page-section="home" aria-label="Portal shortcuts">
+        <div class="panel-header"><div><p class="eyebrow">PUPIL PORTAL</p><h2>Welcome to Pupil Timetable System</h2><p>Choose one of the portal areas below. The normal order is Import → Timetable → Courses → Export.</p></div><span class="format-badge">SHORTCUTS</span></div>
+        <div class="portal-shortcuts">
+          <button class="portal-shortcut" data-page="import"><img src="assets/portal-icon-3.jpg" alt="" /><span><strong>Import timetable</strong><small>PDF / JSON</small></span></button>
+          <button class="portal-shortcut" data-page="timetable"><img src="assets/portal-icon-4.jpg" alt="" /><span><strong>My timetable</strong><small>View and edit cells</small></span></button>
+          <button class="portal-shortcut" data-page="courses"><img src="assets/portal-icon-5.jpg" alt="" /><span><strong>Course management</strong><small>Blocks and standing lessons</small></span></button>
+          <button class="portal-shortcut" data-page="fun"><img src="assets/portal-icon-1.jpg" alt="" /><span><strong>趣味排课</strong><small>Fantasy arrangements</small></span></button>
+          <button class="portal-shortcut" data-page="export"><img src="assets/portal-icon-6.jpg" alt="" /><span><strong>Wallpaper export</strong><small>iPad / phone</small></span></button>
+          <button class="portal-shortcut" data-page="home" data-home-help="true"><img src="assets/portal-icon-2.jpg" alt="" /><span><strong>How to use</strong><small>Instructions below</small></span></button>
         </div>
       </section>
 
@@ -52,7 +59,7 @@
             <h2 id="importTitle">Bring in a timetable</h2>
             <p>Use the PDF saved from iSAMS, or import this system's JSON format.</p>
           </div>
-          <span class="format-badge">PDF → JSON</span>
+          <div class="panel-header-actions"><button id="importButton" class="button primary">Import PDF / JSON</button><span class="format-badge">PDF → JSON</span></div>
         </div>
         <div class="import-body">
           <button id="dropzone" class="dropzone" type="button">
@@ -73,7 +80,7 @@
               <h2 id="tableTitle">Student timetable</h2>
               <p>Campus · Reg and P1–P14 · Monday to Friday</p>
             </div>
-            <span class="live-badge">LIVE</span>
+            <div class="panel-header-actions"><button id="demoButton" class="button secondary">Load demo</button><button id="resetButton" class="button danger">Reset</button><span class="live-badge">LIVE</span></div>
           </div>
           <div class="table-wrap">
             <table id="timetable" class="timetable"></table>
@@ -228,6 +235,7 @@
               </select>
             </label>
             <button id="downloadButton" class="button primary">Download PNG</button>
+            <button id="exportJsonButton" class="button secondary">Export JSON</button>
           </div>
         </div>
         <div class="preview-shell">
@@ -241,7 +249,7 @@
         </div>
       </section>
 
-      <section class="panel guide-panel page-section" id="howToUse" data-page-section="help" aria-labelledby="guideTitle">
+      <section class="panel guide-panel page-section" id="howToUse" data-page-section="home" aria-labelledby="guideTitle">
         <div class="panel-header">
           <div>
             <p class="eyebrow">HOW TO USE</p>
@@ -286,6 +294,7 @@
       Pupil Timetable System · iSAMS-compatible import · Not an official school service
     </footer>
 
+    <input id="importInput" type="file" accept=".pdf,.json,application/pdf,application/json" hidden />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="logo-data.js?v=202609192450"></script>
     <script src="guide-data.js?v=202609192450"></script>

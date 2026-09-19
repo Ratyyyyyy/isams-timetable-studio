@@ -286,6 +286,15 @@ button {
 .panel-header.compact {
   min-height: 58px;
 }
+.panel-header-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.portal-home-tools { margin-top:14px; }
+.portal-shortcuts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; padding:10px; background:#f1f2f3; }
+.portal-shortcut { display:flex; align-items:center; gap:10px; min-height:78px; padding:8px 10px; border:1px solid #c3c7ca; border-radius:0; background:linear-gradient(#fff,#e6e7e8); color:#3f4549; text-align:left; box-shadow:inset 0 1px 0 #fff; }
+.portal-shortcut:hover { background:linear-gradient(#fff,#d6e4ed); color:#00365d; }
+.portal-shortcut img { width:52px; height:52px; object-fit:contain; image-rendering:auto; }
+.portal-shortcut strong, .portal-shortcut small { display:block; }
+.portal-shortcut strong { font-size:12px; font-weight:600; }
+.portal-shortcut small { margin-top:3px; color:#777e83; font-size:10px; }
 
 .panel-header h2,
 .subheading h3 {
@@ -563,6 +572,7 @@ footer {
   .course-tools-grid { grid-template-columns:1fr; }
   .course-add-card { border-left:0; border-top:1px solid #d0d4d7; }
   .fun-results { grid-template-columns:1fr; }
+  .portal-shortcuts { grid-template-columns:repeat(2,minmax(0,1fr)); }
 
   .editor-panel {
     position: static;
@@ -861,4 +871,5 @@ footer {
   .guide-grid {
     grid-template-columns: 1fr;
   }
+  .portal-shortcuts { grid-template-columns:1fr; }
 }
