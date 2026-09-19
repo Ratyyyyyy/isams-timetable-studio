@@ -26,6 +26,7 @@
       <button class="nav-item" data-page="fun">趣味排课</button>
       <button class="nav-item" data-page="import">Import</button>
       <button class="nav-item" data-page="export">Export</button>
+      <button class="nav-item" data-page="help">How to use</button>
     </nav>
 
     <main class="workspace">
@@ -48,7 +49,7 @@
           <button class="portal-shortcut" data-page="courses"><img src="assets/portal-icon-5.jpg" alt="" /><span><strong>Course management</strong><small>Blocks and standing lessons</small></span></button>
           <button class="portal-shortcut" data-page="fun"><img src="assets/portal-icon-1.jpg" alt="" /><span><strong>趣味排课</strong><small>Fantasy arrangements</small></span></button>
           <button class="portal-shortcut" data-page="export"><img src="assets/portal-icon-6.jpg" alt="" /><span><strong>Wallpaper export</strong><small>iPad / phone</small></span></button>
-          <button class="portal-shortcut" data-page="home" data-home-help="true"><img src="assets/portal-icon-2.jpg" alt="" /><span><strong>How to use</strong><small>Instructions below</small></span></button>
+          <button class="portal-shortcut" data-page="help"><img src="assets/portal-icon-2.jpg" alt="" /><span><strong>How to use</strong><small>Step-by-step guide</small></span></button>
         </div>
       </section>
 
@@ -193,7 +194,7 @@
           <div>
             <p class="eyebrow">趣味排课 · 仅供娱乐</p>
             <h2 id="funPlannerTitle">趣味排课</h2>
-            <p>These are playful, non-destructive rearrangements calculated in the browser. Your real timetable is not changed.</p>
+            <p>These are playful, non-destructive comparisons calculated in the browser. No timetable is displayed or changed here.</p>
           </div>
           <div class="fun-controls">
             <label>幻想方案
@@ -207,9 +208,8 @@
           </div>
         </div>
         <div id="funPlannerResults" class="fun-results" aria-live="polite">
-          <div class="empty-state">Run the scenarios to compare an early-start week, a compact week, and an earlier Friday finish.</div>
+          <div class="empty-state">Choose a scenario to compare an early-start week, a compact week, and an earlier Friday finish.</div>
         </div>
-        <div class="fantasy-table-wrap"><table id="funFantasyTable" class="timetable fantasy-table"></table></div>
       </section>
 
       <section class="panel export-panel page-section" id="exportSection" data-page-section="export" aria-labelledby="exportTitle">
@@ -243,7 +243,7 @@
         </div>
       </section>
 
-      <section class="panel guide-panel page-section" id="howToUse" data-page-section="home" aria-labelledby="guideTitle">
+      <section class="panel guide-panel page-section" id="howToUse" data-page-section="help" aria-labelledby="guideTitle">
         <div class="panel-header">
           <div>
             <p class="eyebrow">HOW TO USE</p>
