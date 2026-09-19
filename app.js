@@ -423,14 +423,15 @@ document.querySelector("#demoButton").addEventListener("click", function () {
   document.querySelector("#timetableSection").scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
-deviceSelect.addEventListener("change", drawWallpaper);
-exportModeSelect.addEventListener("change", drawWallpaper);
-document.querySelector("#downloadButton").addEventListener("click", downloadWallpaper);
+if (deviceSelect) deviceSelect.addEventListener("change", drawWallpaper);
+if (exportModeSelect) exportModeSelect.addEventListener("change", drawWallpaper);
+const downloadButton = document.querySelector("#downloadButton");
+if (downloadButton) downloadButton.addEventListener("click", downloadWallpaper);
 
 document.querySelectorAll(".quick-export").forEach(function (button) {
   button.addEventListener("click", function () {
-    deviceSelect.value = button.dataset.device;
-    exportModeSelect.value = button.dataset.mode || "native";
+    if (deviceSelect) deviceSelect.value = button.dataset.device;
+    if (exportModeSelect) exportModeSelect.value = button.dataset.mode || "native";
     drawWallpaper();
     downloadWallpaper();
   });
@@ -717,18 +718,22 @@ function downloadBlob(blob, filename) {
   setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
 }
 
+function selectedExportMode() {
+  return exportModeSelect && exportModeSelect.value === "p13p14" ? "p13p14" : "native";
+}
+
 function downloadWallpaper() {
   drawWallpaper();
   const filename = "CampusTimetable_" +
-    (deviceSelect.value === "ipad" ? "iPad" : "Phone") + "_" +
-    (exportModeSelect.value === "p13p14" ? "P13-P14" : "Native") + ".png";
+    (deviceSelect && deviceSelect.value === "ipad" ? "iPad" : "Phone") + "_" +
+    (selectedExportMode() === "p13p14" ? "P13-P14" : "Native") + ".png";
   canvas.toBlob(function (blob) {
     if (blob) downloadBlob(blob, filename);
   }, "image/png");
 }
 
 function drawWallpaper() {
-  const config = deviceSelect.value === "ipad"
+  const config = deviceSelect && deviceSelect.value === "ipad"
     ? {
       width: 2048,
       height: 2732,
@@ -758,7 +763,7 @@ function drawWallpaper() {
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   drawBrand(ctx, config);
-  const periods = exportModeSelect.value === "p13p14"
+  const periods = selectedExportMode() === "p13p14"
     ? state.periods
     : state.periods.filter(function (period) {
       return period.label !== "P13" && period.label !== "P14";
@@ -932,6 +937,7 @@ setupGuideImages();
 renderTable();
 drawWallpaper();
 logoImage.addEventListener("load", drawWallpaper);
+
 
 
 
