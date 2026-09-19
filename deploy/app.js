@@ -207,7 +207,7 @@ const batchCourseInput = document.querySelector("#batchCourseInput");
 const batchTeacherInput = document.querySelector("#batchTeacherInput");
 const batchRoomInput = document.querySelector("#batchRoomInput");
 const batchNoteInput = document.querySelector("#batchNoteInput");
-const batchStandingInput = document.querySelector("#batchStandingInput");
+const batchActionStatus = document.querySelector("#batchActionStatus");
 const logoImage = new Image();
 if (window.UCS_LOGO_DATA) logoImage.src = window.UCS_LOGO_DATA;
 
@@ -277,7 +277,8 @@ function selectedBatchCells() {
 function updateBatchSelectionStatus() {
   if (batchSelectionStatus) {
     const count = selectedBatchCells().length;
-    batchSelectionStatus.textContent = count ? count + " cell" + (count === 1 ? "" : "s") + " selected." : "No cells selected.";
+    batchSelectionStatus.textContent = count + " selected";
+    batchSelectionStatus.classList.toggle("has-selection", count > 0);
   }
 }
 
@@ -288,7 +289,8 @@ function renderBatchGrid() {
     const cells = DAYS.map(function (day) {
       const cell = getCell(period.label, day);
       const label = cell.course ? escapeHtml(cell.course) : "<span class=\"batch-empty\">Empty</span>";
-      return "<td><label class=\"batch-cell\"><input type=\"checkbox\" data-batch-cell=\"" + escapeHtml(key(period.label, day)) + " /><span class=\"batch-cell-content\"><strong>" + label + "</strong><small>" + escapeHtml([cell.teacher, cell.room].filter(Boolean).join(" · ")) + "</small></span></label></td>";
+      const meta = escapeHtml([cell.teacher, cell.room].filter(Boolean).join(" · "));
+      return "<td><label class=\"batch-cell\"><input type=\"checkbox\" aria-label=\"Select " + escapeHtml(period.label + " " + day) + "\" data-batch-cell=\"" + escapeHtml(key(period.label, day)) + "\" /><span class=\"batch-cell-content\"><strong class=\"batch-course\">" + label + "</strong>" + (meta ? "<small class=\"batch-meta\">" + meta + "</small>" : "") + "</span></label></td>";
     }).join("");
     return "<tr><th class=\"period-cell\">" + escapeHtml(period.label) + "<span>" + escapeHtml(period.time) + "</span></th>" + cells + "</tr>";
   }).join("");
@@ -299,21 +301,28 @@ function renderBatchGrid() {
 
 function applyBatchEntry(clearOnly) {
   const selected = selectedBatchCells();
-  if (!selected.length) { if (batchSelectionStatus) batchSelectionStatus.textContent = "Select at least one cell first."; return; }
+  if (!selected.length) {
+    if (batchActionStatus) batchActionStatus.textContent = "Select at least one timetable cell first.";
+    return;
+  }
+  if (!clearOnly && !batchCourseInput.value.trim()) {
+    if (batchActionStatus) batchActionStatus.textContent = "Enter a course or activity before applying the lesson.";
+    batchCourseInput.focus();
+    return;
+  }
   selected.forEach(function (cellKey) {
     if (clearOnly) {
       delete state.cells[cellKey];
       delete state.standingCourses[cellKey];
     } else {
       state.cells[cellKey] = lesson(batchCourseInput.value.trim(), batchTeacherInput.value.trim(), batchRoomInput.value.trim(), batchNoteInput.value.trim());
-      if (batchStandingInput.checked) state.standingCourses[cellKey] = true;
-      else delete state.standingCourses[cellKey];
+      delete state.standingCourses[cellKey];
     }
   });
   saveState();
   renderTable();
   drawWallpaper();
-  if (batchSelectionStatus) batchSelectionStatus.textContent = (clearOnly ? "Cleared " : "Applied lesson to ") + selected.length + " selected cell" + (selected.length === 1 ? "" : "s") + ".";
+  if (batchActionStatus) batchActionStatus.textContent = (clearOnly ? "Removed lessons from " : "Lesson applied to ") + selected.length + " cell" + (selected.length === 1 ? "" : "s") + ". Open Timetable to verify the result.";
 }
 
 function renderLessonCell(period, day, cell) {
@@ -646,12 +655,17 @@ const batchClearSelectionButton = document.querySelector("#batchClearSelectionBu
 if (batchApplyButton) batchApplyButton.addEventListener("click", function () { applyBatchEntry(false); });
 if (batchClearCellsButton) batchClearCellsButton.addEventListener("click", function () { applyBatchEntry(true); });
 if (batchSelectAllButton) batchSelectAllButton.addEventListener("click", function () {
-  batchGrid.querySelectorAll("input[data-batch-cell]").forEach(function (input) { input.checked = true; });
+  batchGrid.querySelectorAll("input[data-batch-cell]").forEach(function (input) {
+    const cell = state.cells[input.dataset.batchCell];
+    input.checked = !cell || !cell.course;
+  });
   updateBatchSelectionStatus();
+  if (batchActionStatus) batchActionStatus.textContent = "All empty cells are selected. Uncheck any cells you do not want to fill.";
 });
 if (batchClearSelectionButton) batchClearSelectionButton.addEventListener("click", function () {
   batchGrid.querySelectorAll("input[data-batch-cell]").forEach(function (input) { input.checked = false; });
   updateBatchSelectionStatus();
+  if (batchActionStatus) batchActionStatus.textContent = "Selection cleared.";
 });
 const runFunPlannerButton = document.querySelector("#runFunPlannerButton");
 if (runFunPlannerButton) runFunPlannerButton.addEventListener("click", runFunPlanner);

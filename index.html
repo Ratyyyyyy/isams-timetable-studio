@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#00365d" />
     <title>Pupil Timetable System</title>
-    <link rel="stylesheet" href="styles.css?v=202609192830" />
+    <link rel="stylesheet" href="styles.css?v=202609200220" />
   </head>
   <body>
     <header class="portal-header">
@@ -104,7 +104,6 @@
               Note
               <input id="noteInput" type="text" placeholder="Optional note" disabled />
             </label>
-            <label class="check-line"><input id="standingInput" type="checkbox" disabled /> Mark as a standing lesson</label>
             <div class="editor-actions">
               <button id="copyDownButton" type="button" class="button secondary" disabled>Copy to next period</button>
               <button id="clearCellButton" type="button" class="button danger" disabled>Clear cell</button>
@@ -143,18 +142,17 @@
         </div>
         <div class="batch-entry-layout">
           <div class="batch-grid-card">
-            <div class="subheading"><div><p class="eyebrow">CELL SELECTION</p><h3>Choose cells to fill</h3></div><div class="batch-selection-actions"><button id="batchSelectAllButton" type="button" class="button secondary">Select all</button><button id="batchClearSelectionButton" type="button" class="button secondary">Clear selection</button></div></div>
+            <div class="subheading"><div><p class="eyebrow">STEP 1 · CELL SELECTION</p><h3>Choose cells to fill</h3><p class="subheading-help">Tap one or more cells. Selected cells turn blue.</p></div><div class="batch-selection-actions"><button id="batchSelectAllButton" type="button" class="button secondary">Select empty cells</button><button id="batchClearSelectionButton" type="button" class="button secondary">Clear selection</button></div></div>
             <div id="batchGrid" class="batch-grid-wrap"></div>
-            <p id="batchSelectionStatus" class="form-hint">No cells selected.</p>
           </div>
           <div class="batch-form-card">
-            <div class="subheading"><div><p class="eyebrow">LESSON DETAILS</p><h3>Apply to selected cells</h3></div></div>
-            <label>Course / activity<input id="batchCourseInput" type="text" placeholder="e.g. Chemistry" /></label>
+            <div class="subheading batch-form-heading"><div><p class="eyebrow">STEP 2 · LESSON DETAILS</p><h3>Apply to selected cells</h3></div><span id="batchSelectionStatus" class="selection-count">0 selected</span></div>
+            <label>Course / activity <span class="required-mark">Required</span><input id="batchCourseInput" type="text" placeholder="e.g. AS/Chemistry" autocomplete="off" /></label>
             <div class="form-row"><label>Teacher<input id="batchTeacherInput" type="text" placeholder="e.g. LCA" /></label><label>Room<input id="batchRoomInput" type="text" placeholder="e.g. A312" /></label></div>
             <label>Note<input id="batchNoteInput" type="text" placeholder="Optional note" /></label>
-            <label class="check-line"><input id="batchStandingInput" type="checkbox" /> Mark selected cells as standing lessons</label>
-            <div class="batch-form-actions"><button id="batchApplyButton" type="button" class="button primary">Apply to selected</button><button id="batchClearCellsButton" type="button" class="button danger">Clear selected cells</button></div>
-            <p class="form-hint">This mirrors teacher-style multi-cell entry: select cells first, then apply one lesson record to the selection.</p>
+            <div class="batch-form-actions"><button id="batchApplyButton" type="button" class="button primary">Apply lesson</button><button id="batchClearCellsButton" type="button" class="button danger">Remove lessons</button></div>
+            <p id="batchActionStatus" class="batch-action-status" role="status">Select cells on the left, then enter the lesson once.</p>
+            <div class="batch-mini-guide"><strong>How it works</strong><ol><li>Select the timetable cells.</li><li>Enter the course, teacher and room once.</li><li>Choose <em>Apply lesson</em>, then check the Timetable page.</li></ol></div>
           </div>
         </div>
       </section>
@@ -218,71 +216,41 @@
         <div class="panel-header">
           <div>
             <p class="eyebrow">HOW TO USE</p>
-            <h2 id="guideTitle">Export from iSAMS, then import here</h2>
-            <p>The screenshots below show the exact iPad flow used for the demonstration PDF.</p>
+            <h2 id="guideTitle">From iSAMS to your wallpaper</h2>
+            <p>Import your school timetable, correct the details, and export a wallpaper that fits your device.</p>
           </div>
-          <span class="format-badge">4 STEPS</span>
+          <span class="format-badge">3 STAGES</span>
         </div>
-        <div class="guide-grid">
-          <article class="guide-step">
-            <div class="step-number">1</div>
-            <img data-guide-image="0" alt="Open the Timetable section in the pupil portal" />
-            <h3>Open Timetable</h3>
-            <p>In the pupil portal, tap <strong>Timetable</strong> in the top navigation.</p>
-          </article>
-          <article class="guide-step">
-            <div class="step-number">2</div>
-            <img data-guide-image="1" alt="Open My Timetable in the pupil portal" />
-            <h3>Open My Timetable</h3>
-            <p>Choose <strong>My Timetable</strong>, then wait for the full Monday–Friday grid to load.</p>
-          </article>
-          <article class="guide-step">
-            <div class="step-number">3</div>
-            <img data-guide-image="2" alt="Use the iPad share menu to save the timetable PDF" />
-            <h3>Share the PDF</h3>
-            <p>Tap the browser share icon, select <strong>Pupil Portal | My Timetable</strong>, then choose <strong>Save to Files</strong>.</p>
-          </article>
-          <article class="guide-step">
-            <div class="step-number">4</div>
-            <img data-guide-image="3" alt="Save the timetable PDF to the iPad" />
-            <h3>Save and import</h3>
-            <p>Save the file somewhere easy to find, return here, and tap <strong>Import PDF / JSON</strong>.</p>
-          </article>
+        <div class="guide-flow" aria-label="Workflow">
+          <div><span>1</span><strong>Import</strong><small>Save the iSAMS PDF and upload it here</small></div>
+          <div><span>2</span><strong>Adjust</strong><small>Correct individual cells or fill several at once</small></div>
+          <div><span>3</span><strong>Export</strong><small>Choose a device and download the wallpaper</small></div>
         </div>
-        <div class="guide-actions">
-          <article class="guide-action">
-            <p class="eyebrow">STEP 1 · IMPORT</p>
-            <h3>Bring in your timetable</h3>
-            <p>Open <strong>Import</strong>, choose the PDF exported from iSAMS or a compatible JSON file, and wait for the import confirmation.</p>
-            <p class="guide-action-note">PDF rows are read into the Campus grid. Reg–P12 are always available; P13/P14 stay blank when the source does not contain them.</p>
-          </article>
-          <article class="guide-action">
-            <p class="eyebrow">STEP 2 · CHECK</p>
-            <h3>Review the timetable</h3>
-            <p>Open <strong>Timetable</strong> to check each day, period, teacher and room. Tap a lesson cell to edit it in <strong>Cell Editor</strong>.</p>
-            <p class="guide-action-note">Use <strong>Load demo</strong> to inspect the layout before importing your own data.</p>
-          </article>
-          <article class="guide-action">
-            <p class="eyebrow">STEP 3 · BATCH ENTRY</p>
-            <h3>Fill several cells at once</h3>
-            <p>Open <strong>Batch entry</strong>, select the required cells, enter the lesson details once, then choose <strong>Apply to selected</strong>.</p>
-            <p class="guide-action-note">Use <strong>Mark selected cells as standing lessons</strong> when the lesson should remain a regular weekly entry.</p>
-          </article>
-          <article class="guide-action">
-            <p class="eyebrow">STEP 4 · FUN TIMETABLE</p>
-            <h3>Preview a different arrangement</h3>
-            <p>Open <strong>Fun Timetable</strong>, choose an option, and select <strong>Generate option</strong> to see a simulated timetable.</p>
-            <p class="guide-action-note">This page is for comparison only. It never changes your real timetable and has no download action.</p>
-          </article>
-          <article class="guide-action">
-            <p class="eyebrow">STEP 5 · EXPORT</p>
-            <h3>Create a device wallpaper</h3>
-            <p>Open <strong>Export</strong>, choose your device and timetable format, check the preview, then choose <strong>Download PNG</strong>.</p>
-            <p class="guide-action-note">Use <strong>Native timetable · Reg–P12</strong> for the school-only format, or <strong>Campus + P13/P14</strong> when you want the extended evening rows.</p>
-          </article>
-        </div>
+
+        <section class="guide-stage">
+          <div class="guide-stage-heading"><span>1</span><div><p class="eyebrow">IMPORT THE SOURCE</p><h3>Save your timetable from iSAMS</h3><p>Follow these four taps on iPad, then upload the saved PDF on the Import page.</p></div></div>
+          <div class="guide-grid">
+            <article class="guide-step"><img data-guide-image="0" alt="Open the Timetable section in the pupil portal" /><h3>Open Timetable</h3><p>Tap <strong>Timetable</strong> in the portal navigation.</p></article>
+            <article class="guide-step"><img data-guide-image="1" alt="Open My Timetable in the pupil portal" /><h3>Open My Timetable</h3><p>Wait until the complete Monday–Friday grid appears.</p></article>
+            <article class="guide-step"><img data-guide-image="2" alt="Use the iPad share menu to save the timetable PDF" /><h3>Open the share menu</h3><p>Tap Share, then choose <strong>Save to Files</strong>.</p></article>
+            <article class="guide-step"><img data-guide-image="3" alt="Save the timetable PDF to the iPad" /><h3>Import the PDF</h3><p>Return here, open <strong>Import</strong>, and choose the saved file.</p></article>
+          </div>
+        </section>
+
+        <section class="guide-stage">
+          <div class="guide-stage-heading"><span>2</span><div><p class="eyebrow">ADJUST YOUR TIMETABLE</p><h3>Correct the timetable before exporting</h3><p>Use the method that matches the size of your change.</p></div></div>
+          <div class="guide-methods">
+            <article class="guide-method"><span class="method-tag">ONE CELL</span><h4>Use Timetable</h4><ol><li>Open <strong>Timetable</strong>.</li><li>Tap the cell you want to change.</li><li>Edit Course, Teacher, Room or Note in <strong>Cell Editor</strong>.</li><li>Your change is saved automatically.</li></ol></article>
+            <article class="guide-method"><span class="method-tag">SEVERAL CELLS</span><h4>Use Batch entry</h4><ol><li>Open <strong>Batch entry</strong>.</li><li>Select the cells that should contain the same lesson.</li><li>Enter the lesson details once and choose <strong>Apply lesson</strong>.</li><li>Return to <strong>Timetable</strong> and check the result.</li></ol></article>
+          </div>
+        </section>
+
+        <section class="guide-stage guide-export-stage">
+          <div class="guide-stage-heading"><span>3</span><div><p class="eyebrow">CREATE THE WALLPAPER</p><h3>Preview at the correct device size</h3><p>Open Export only after the timetable looks correct.</p></div></div>
+          <div class="export-instructions"><div><strong>Choose Device</strong><p>Select iPad Pro or Phone.</p></div><div><strong>Choose Format</strong><p>Use Reg–P12, or include P13/P14.</p></div><div><strong>Check Preview</strong><p>Confirm the logo, margins and timetable are fully visible.</p></div><div><strong>Download PNG</strong><p>Save the image and set it as your wallpaper.</p></div></div>
+        </section>
         <div class="guide-note">
-          <strong>Demo:</strong> tap <em>Load demo</em> at the top to see a neutral sample timetable before importing your own file. PDF recognition keeps Campus through P12, preserves optional P13/P14 when present, and ignores rows after P14.
+          <strong>Before downloading:</strong> check the Timetable page first. The wallpaper uses the timetable currently saved in this browser.
         </div>
       </section>
     </main>
@@ -293,8 +261,8 @@
 
     <input id="importInput" type="file" accept=".pdf,.json,application/pdf,application/json" hidden />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="logo-data.js?v=202609192830"></script>
-    <script src="guide-data.js?v=202609192830"></script>
-    <script src="app.js?v=202609192830"></script>
+    <script src="logo-data.js?v=202609200220"></script>
+    <script src="guide-data.js?v=202609200220"></script>
+    <script src="app.js?v=202609200220"></script>
   </body>
 </html>

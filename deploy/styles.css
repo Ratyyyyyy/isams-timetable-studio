@@ -909,6 +909,268 @@ footer {
   color: #737c81 !important;
   font-size: 10px !important;
 }
+
+/* Batch entry: keep the selection readable and the action state visible. */
+.subheading-help {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+.batch-grid-wrap {
+  max-height: min(760px, calc(100vh - 230px));
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: #fff;
+}
+.batch-grid {
+  min-width: 820px;
+}
+.batch-grid thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+.batch-grid thead th:first-child {
+  left: 0;
+  z-index: 5;
+  width: 92px;
+  min-width: 92px;
+}
+.batch-grid .period-cell {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  width: 92px;
+  min-width: 92px;
+  box-shadow: 1px 0 0 #aeb5ba;
+}
+.batch-cell {
+  min-height: 66px;
+  justify-content: flex-start;
+  padding: 7px;
+}
+.batch-cell input {
+  top: 8px;
+  left: 8px;
+  width: 18px;
+  height: 18px;
+}
+.batch-cell-content {
+  display: grid;
+  width: 100%;
+  gap: 3px;
+  padding: 0 3px 0 26px;
+  text-align: left;
+}
+.batch-course {
+  color: #34383c;
+  font-size: 11px !important;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.batch-meta {
+  margin: 0 !important;
+  color: #6a7177;
+  font-size: 10px !important;
+  line-height: 1.25;
+}
+.batch-empty {
+  display: block;
+  padding-top: 2px;
+}
+.batch-form-card {
+  align-self: start;
+}
+.batch-form-heading {
+  align-items: flex-start;
+}
+.selection-count {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 0 9px;
+  border: 1px solid #b8c1c7;
+  background: #eef1f3;
+  color: #616970;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.selection-count.has-selection {
+  border-color: #6d9dbb;
+  background: #dcecf6;
+  color: #174e70;
+}
+.required-mark {
+  float: right;
+  color: #8e3f3f;
+  font-size: 9px;
+  font-weight: 600;
+}
+.batch-action-status {
+  min-height: 42px;
+  margin: 12px 0 0;
+  padding: 9px 10px;
+  border-left: 3px solid #2b709d;
+  background: #edf5f9;
+  color: #3f505b;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.batch-mini-guide {
+  margin-top: 12px;
+  padding: 11px 12px;
+  border: 1px solid #d4d8db;
+  background: #f4f5f6;
+  color: #596168;
+  font-size: 11px;
+}
+.batch-mini-guide strong {
+  color: #34383c;
+}
+.batch-mini-guide ol {
+  margin: 7px 0 0;
+  padding-left: 19px;
+  line-height: 1.55;
+}
+
+/* How to use: one clear route from iSAMS to wallpaper. */
+.guide-flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 14px;
+  border: 1px solid #aeb9c0;
+  background: #f5f6f7;
+}
+.guide-flow > div {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  column-gap: 9px;
+  padding: 12px 14px;
+  border-right: 1px solid #c9ced2;
+}
+.guide-flow > div:last-child {
+  border-right: 0;
+}
+.guide-flow span,
+.guide-stage-heading > span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #1f5f88;
+  background: #2a6f9c;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+.guide-flow strong {
+  align-self: end;
+  color: #34383c;
+  font-size: 13px;
+}
+.guide-flow small {
+  grid-column: 2;
+  margin-top: 2px;
+  color: #6c747a;
+  font-size: 10px;
+  line-height: 1.35;
+}
+.guide-stage {
+  margin: 0 14px 14px;
+  border: 1px solid #c7cdd1;
+  background: #fff;
+}
+.guide-stage-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #c7cdd1;
+  background: linear-gradient(#f8f8f8, #e8eaec);
+}
+.guide-stage-heading h3,
+.guide-stage-heading p {
+  margin: 0;
+}
+.guide-stage-heading h3 {
+  color: #34383c;
+  font-size: 15px;
+}
+.guide-stage-heading p:not(.eyebrow) {
+  margin-top: 3px;
+  color: #697178;
+  font-size: 11px;
+}
+.guide-stage .guide-grid {
+  padding: 12px;
+}
+.guide-stage .guide-step {
+  border-color: #d0d4d7;
+  background: #fbfbfb;
+}
+.guide-stage .guide-step img {
+  aspect-ratio: 720 / 501;
+}
+.guide-methods {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 12px;
+}
+.guide-method {
+  padding: 13px 14px;
+  border: 1px solid #c9ced2;
+  background: #f8f9f9;
+}
+.method-tag {
+  display: inline-block;
+  padding: 3px 6px;
+  border: 1px solid #a7bdca;
+  background: #eaf2f6;
+  color: #275e7b;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+.guide-method h4 {
+  margin: 8px 0 6px;
+  color: #33383c;
+  font-size: 14px;
+}
+.guide-method ol {
+  margin: 0;
+  padding-left: 20px;
+  color: #59636a;
+  font-size: 11px;
+  line-height: 1.65;
+}
+.export-instructions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 12px;
+}
+.export-instructions > div {
+  min-height: 78px;
+  padding: 12px;
+  border: 1px solid #ccd1d4;
+  border-right: 0;
+  background: #fafafa;
+}
+.export-instructions > div:last-child {
+  border-right: 1px solid #ccd1d4;
+}
+.export-instructions strong {
+  color: #34383c;
+  font-size: 12px;
+}
+.export-instructions p {
+  margin: 5px 0 0;
+  color: #6a7278;
+  font-size: 10px;
+  line-height: 1.45;
+}
 .saved-pulse {
   animation: savedPulse 420ms ease-out;
 }
@@ -929,6 +1191,15 @@ footer {
   .guide-actions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .export-instructions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .export-instructions > div:nth-child(2) {
+    border-right: 1px solid #ccd1d4;
+  }
+  .export-instructions > div:nth-child(n+3) {
+    border-top: 0;
+  }
 }
 @media (max-width: 760px) {
   .isams-brand > strong {
@@ -947,7 +1218,34 @@ footer {
   .guide-actions {
     grid-template-columns: 1fr;
   }
+  .guide-flow,
+  .guide-methods,
+  .export-instructions {
+    grid-template-columns: 1fr;
+  }
+  .guide-flow > div {
+    border-right: 0;
+    border-bottom: 1px solid #c9ced2;
+  }
+  .guide-flow > div:last-child {
+    border-bottom: 0;
+  }
+  .export-instructions > div,
+  .export-instructions > div:nth-child(2),
+  .export-instructions > div:last-child {
+    border-right: 1px solid #ccd1d4;
+    border-top: 0;
+  }
+  .export-instructions > div:first-child {
+    border-top: 1px solid #ccd1d4;
+  }
   .portal-shortcuts { grid-template-columns:1fr; }
   .batch-selection-actions { width:100%; }
   .batch-selection-actions .button { flex:1 1 120px; }
+}
+@media (min-width: 1081px) {
+  .batch-form-card {
+    position: sticky;
+    top: 10px;
+  }
 }
