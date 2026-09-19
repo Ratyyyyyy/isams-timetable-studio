@@ -614,3 +614,209 @@ footer {
     padding: 14px;
   }
 }
+
+
+/* Pupil Timetable System additions */
+.isams-brand {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.isams-brand > strong {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  color: #fff;
+  font-size: clamp(25px, 3.3vw, 43px);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  transform: none;
+  white-space: nowrap;
+}
+.portal-title {
+  flex: 0 0 auto;
+}
+.portal-title small {
+  letter-spacing: 0.19em;
+}
+.import-panel {
+  margin-bottom: 14px;
+}
+.import-body {
+  display: grid;
+  grid-template-columns: minmax(240px, 390px) 1fr;
+  gap: 14px;
+  align-items: stretch;
+  padding: 14px;
+}
+.dropzone {
+  min-height: 92px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: #30363a;
+  background: #f8fafb;
+  border: 1px dashed #7f929e;
+  border-radius: 2px;
+  transition: background 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+.dropzone:hover,
+.dropzone.dragging {
+  background: #eaf3f8;
+  border-color: #2673a5;
+  box-shadow: inset 0 0 0 2px rgba(38, 115, 165, 0.12);
+}
+.dropzone-icon {
+  color: #1d628d;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+}
+.dropzone strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+.dropzone small {
+  color: #6a7177;
+  font-size: 11px;
+}
+.import-status {
+  min-height: 92px;
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  color: #596066;
+  background: #f4f5f6;
+  border-left: 3px solid #aeb4b9;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.import-status.success {
+  color: #215d3d;
+  background: #edf8f1;
+  border-left-color: #4aa276;
+}
+.import-status.working {
+  color: #245d7e;
+  background: #eef6fb;
+  border-left-color: #4a94c0;
+}
+.import-status.error {
+  color: #873e3e;
+  background: #fff2f2;
+  border-left-color: #b64e4e;
+}
+.format-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 9px;
+  color: #285d78;
+  background: #e9f3f8;
+  border: 1px solid #b7d2df;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.guide-panel {
+  margin-top: 14px;
+}
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding: 14px;
+}
+.guide-step {
+  position: relative;
+  min-width: 0;
+  padding: 0 0 12px;
+  border: 1px solid #c8cdd1;
+  background: #fafafa;
+}
+.guide-step img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 720 / 501;
+  object-fit: cover;
+  border-bottom: 1px solid #c8cdd1;
+  background: #e9ecee;
+}
+.step-number {
+  position: absolute;
+  z-index: 1;
+  top: 8px;
+  left: 8px;
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: #1a5d84;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(30, 45, 55, 0.25);
+  font-size: 12px;
+  font-weight: 700;
+}
+.guide-step h3,
+.guide-step p {
+  margin: 10px 12px 0;
+}
+.guide-step h3 {
+  color: #34383c;
+  font-size: 14px;
+  font-weight: 600;
+}
+.guide-step p {
+  color: #6a7177;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.guide-note {
+  margin: 0 14px 14px;
+  padding: 11px 13px;
+  color: #4a555c;
+  background: #f1f5f7;
+  border-left: 3px solid #7a9caf;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.saved-pulse {
+  animation: savedPulse 420ms ease-out;
+}
+@keyframes savedPulse {
+  0% { box-shadow: 0 0 0 4px rgba(101, 212, 152, 0.45); }
+  100% { box-shadow: 0 0 0 4px rgba(101, 212, 152, 0.15); }
+}
+@media (max-width: 900px) {
+  .portal-header {
+    height: 96px;
+  }
+  .portal-title strong {
+    font-size: 14px;
+  }
+  .guide-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .isams-brand > strong {
+    font-size: clamp(20px, 6.4vw, 32px);
+    white-space: normal;
+  }
+  .portal-title {
+    display: none;
+  }
+  .import-body {
+    grid-template-columns: 1fr;
+  }
+  .guide-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
