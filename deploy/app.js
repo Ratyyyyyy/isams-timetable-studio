@@ -533,7 +533,46 @@ function runFunPlanner() {
     ["Most compact week", "Remove gaps inside each day while keeping day totals.", counts.reduce(function (sum, count) { return sum + count; }, 0) + " lessons", "This is the cleanest fantasy layout for reducing idle gaps; it does not move or download your real data."],
   ];
   const container = document.querySelector("#funPlannerResults");
-  if (container) container.innerHTML = cards.map(function (card) { return "<article class=\"fun-card\"><p class=\"eyebrow\">" + escapeHtml(card[0]) + "</p><h3>" + escapeHtml(card[2]) + "</h3><p>" + escapeHtml(card[1]) + "</p><small>" + escapeHtml(card[3]) + "</small></article>"; }).join("") + "<p class=\"fun-footnote\">Current timetable: " + occupied.length + " occupied lesson cells · early-period share " + earlyShare + "%.</p>";
+  if (container) container.innerHTML = cards.map(function (card) { return "<article class=\"fun-card\"><p class=\"eyebrow\">" + escapeHtml(card[0]) + "</p><h3>" + escapeHtml(card[2]) + "</h3><p>" + escapeHtml(card[1]) + "</p><small>" + escapeHtml(card[3]) + "</small></article>"; }).join("") + "<p class=\"fun-footnote\">当前真实课表：" + occupied.length + " 个课时 · P1–P4 占比 " + earlyShare + "%。下方为所选方案的模拟课表。</p>";
+  renderFunPreview(scenario);
+}
+
+function fantasyCells(scenario) {
+  const fantasy = {};
+  const regularPeriods = state.periods.filter(function (period) { return /^P(?:[1-9]|1[0-2])$/.test(period.label); });
+  DAYS.forEach(function (day) {
+    const shouldPack = scenario === "early" || scenario === "compact" || (scenario === "friday" && day === "Friday");
+    const occupied = regularPeriods.filter(function (period) { return getCell(period.label, day).course; });
+    if (shouldPack) {
+      occupied.forEach(function (source, index) {
+        const target = regularPeriods[index];
+        if (target) fantasy[key(target.label, day)] = getCell(source.label, day);
+      });
+    } else {
+      occupied.forEach(function (period) { fantasy[key(period.label, day)] = getCell(period.label, day); });
+    }
+    ["P13", "P14"].forEach(function (label) {
+      const cell = getCell(label, day);
+      if (cell.course) fantasy[key(label, day)] = cell;
+    });
+  });
+  return fantasy;
+}
+
+function renderFunPreview(scenario) {
+  const preview = document.querySelector("#funPreview");
+  if (!preview) return;
+  const fantasy = fantasyCells(scenario);
+  const header = "<div class=\"fun-preview-heading\"><strong>模拟课表预览</strong><span>只显示方案结果，不写回真实课表</span></div>";
+  const tableHead = "<thead><tr><th>P</th>" + DAYS.map(function (day) { return "<th>" + day + "</th>"; }).join("") + "</tr></thead>";
+  const rows = state.periods.map(function (period) {
+    const cells = DAYS.map(function (day) {
+      const lines = cellLines(fantasy[key(period.label, day)] || emptyCell());
+      return "<td>" + lines.map(function (line, index) { return "<span class=\"" + (index === 0 ? "lesson-title" : "") + "\">" + escapeHtml(line) + "</span>"; }).join("") + "</td>";
+    }).join("");
+    return "<tr><th class=\"period-cell\">" + escapeHtml(period.label) + "<span>" + escapeHtml(period.time) + "</span></th>" + cells + "</tr>";
+  }).join("");
+  preview.innerHTML = header + "<div class=\"fun-preview-table-wrap\"><table class=\"fun-preview-table\">" + tableHead + "<tbody>" + rows + "</tbody></table></div>";
 }
 
 document.querySelectorAll("[data-add-mode]").forEach(function (button) {
