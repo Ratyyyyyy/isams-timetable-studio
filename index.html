@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#00365d" />
+    <title>Timetable Studio</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="portal-header">
+      <div class="isams-brand" aria-label="iSAMS-inspired timetable studio">
+        <div class="brand-orbit" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <strong>iSAMS</strong>
+      </div>
+      <div class="portal-title">
+        <strong>Personal Planning Portal</strong>
+        <small>Timetable workspace</small>
+      </div>
+      <div class="portal-status"><span></span> Saved locally</div>
+    </header>
+
+    <nav class="portal-nav" aria-label="Main navigation">
+      <button class="nav-item">Home</button>
+      <button class="nav-item">My Details</button>
+      <button class="nav-item">School Timetable</button>
+      <button class="nav-item active">Personal Timetable</button>
+      <button class="nav-item">Reports</button>
+    </nav>
+
+    <main class="workspace">
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow">PERSONAL TIMETABLE</p>
+          <h1>My Personal Timetable</h1>
+          <p>Click a cell to edit. Every change is reflected in the wallpaper preview immediately.</p>
+        </div>
+        <div class="heading-actions">
+          <button id="importButton" class="button secondary">Import JSON</button>
+          <button id="exportJsonButton" class="button secondary">Export JSON</button>
+          <button id="resetButton" class="button danger">Reset</button>
+          <input id="importInput" type="file" accept="application/json" hidden />
+        </div>
+      </section>
+
+      <div class="app-grid">
+        <section class="panel timetable-panel" aria-labelledby="tableTitle">
+          <div class="panel-header">
+            <div>
+              <h2 id="tableTitle">Student timetable</h2>
+              <p>P1–P14 · Monday to Friday</p>
+            </div>
+            <span class="live-badge">LIVE</span>
+          </div>
+          <div class="table-wrap">
+            <table id="timetable" class="timetable"></table>
+          </div>
+        </section>
+
+        <aside class="panel editor-panel" aria-labelledby="editorTitle">
+          <div class="panel-header compact">
+            <div>
+              <p class="eyebrow">CELL EDITOR</p>
+              <h2 id="editorTitle">Select a timetable cell</h2>
+            </div>
+          </div>
+
+          <form id="cellForm" class="editor-form" autocomplete="off">
+            <label>
+              Course / activity
+              <input id="courseInput" type="text" placeholder="e.g. Chemistry" disabled />
+            </label>
+            <div class="form-row">
+              <label>
+                Teacher
+                <input id="teacherInput" type="text" placeholder="e.g. TCH" disabled />
+              </label>
+              <label>
+                Room
+                <input id="roomInput" type="text" placeholder="e.g. TBC" disabled />
+              </label>
+            </div>
+            <label>
+              Note / actual time
+              <input id="noteInput" type="text" placeholder="e.g. 18:15–20:00" disabled />
+            </label>
+            <div class="editor-actions">
+              <button id="copyDownButton" type="button" class="button secondary" disabled>Copy to next period</button>
+              <button id="clearCellButton" type="button" class="button danger" disabled>Clear cell</button>
+            </div>
+          </form>
+
+          <div class="period-editor">
+            <div class="subheading">
+              <div>
+                <p class="eyebrow">PERIOD TIMES</p>
+                <h3>Edit selected period</h3>
+              </div>
+            </div>
+            <div class="form-row">
+              <label>
+                Period
+                <input id="periodLabelInput" type="text" disabled />
+              </label>
+              <label>
+                Time
+                <input id="periodTimeInput" type="text" disabled />
+              </label>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <section class="panel export-panel" aria-labelledby="exportTitle">
+        <div class="panel-header export-header">
+          <div>
+            <p class="eyebrow">WALLPAPER GENERATOR</p>
+            <h2 id="exportTitle">Generate timetable wallpaper</h2>
+            <p>Native grey grid, generous line spacing and lock-screen-safe margins.</p>
+          </div>
+          <div class="export-controls">
+            <label>
+              Device
+              <select id="deviceSelect">
+                <option value="ipad">iPad · 2090 × 3012</option>
+                <option value="phone">Phone · 1080 × 2400</option>
+              </select>
+            </label>
+            <label>
+              Version
+              <select id="versionSelect">
+                <option value="full">Full day</option>
+                <option value="campus">Campus</option>
+              </select>
+            </label>
+            <button id="downloadButton" class="button primary">Download PNG</button>
+          </div>
+        </div>
+        <div class="preview-shell">
+          <canvas id="wallpaperCanvas" aria-label="Wallpaper preview"></canvas>
+        </div>
+        <div class="quick-exports">
+          <button class="quick-export" data-device="ipad" data-version="full">iPad · Full day</button>
+          <button class="quick-export" data-device="ipad" data-version="campus">iPad · Campus</button>
+          <button class="quick-export" data-device="phone" data-version="full">Phone · Full day</button>
+          <button class="quick-export" data-device="phone" data-version="campus">Phone · Campus</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Personal planning tool · iSAMS-inspired interface · Not an official school service
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
