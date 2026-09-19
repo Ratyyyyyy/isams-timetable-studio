@@ -23,4 +23,4 @@ All timetable edits stay in the current browser's `localStorage`. The site does 
 
 Open `index.html`, or serve this folder with any static web server.
 
-This is a personal planning tool and is not an official iSAMS or school service.
+The wallpaper generator uses the provided Ulink College source logo asset.\n\nThis is a personal planning tool and is not an official iSAMS or school service.
