@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#00365d" />
+    <link rel="icon" type="image/gif" href="assets/legacy-portal.gif" />
+    <title>Pupil Timetable System</title>
+    <link rel="stylesheet" href="styles.css?v=202609200450" />
+  </head>
+  <body>
+    <header class="portal-header">
+      <div class="isams-brand" aria-label="Pupil Timetable System">
+        <span class="portal-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <div>
+          <strong>Pupil Timetable System</strong>
+          <small>Student Portal</small>
+        </div>
+      </div>
+      <div class="portal-title">
+        <strong>Pupil Portal</strong>
+      </div>
+      <div class="portal-status"><span></span> Saved locally</div>
+    </header>
+
+    <nav class="portal-nav" aria-label="Main navigation">
+      <button class="nav-item active" data-page="home">Home</button>
+      <button class="nav-item" data-page="timetable">Timetable</button>
+      <button class="nav-item" data-page="courses">Batch entry</button>
+      <button class="nav-item" data-page="fun">Fun Timetable</button>
+      <button class="nav-item" data-page="import">Import</button>
+      <button class="nav-item" data-page="export">Export</button>
+      <button class="nav-item" data-page="help">How to use</button>
+    </nav>
+
+    <main class="workspace">
+      <section class="panel portal-home-tools page-section" data-page-section="home" aria-label="Portal shortcuts">
+        <div class="panel-header"><div><p class="eyebrow">PUPIL PORTAL</p><h2>Home</h2></div></div>
+        <div class="portal-shortcuts">
+          <button class="portal-shortcut" data-page="import"><img src="assets/portal-icon-3.jpg" alt="" /><span><strong>Import timetable</strong><small>PDF / JSON</small></span></button>
+          <button class="portal-shortcut" data-page="timetable"><img src="assets/portal-icon-4.jpg" alt="" /><span><strong>My timetable</strong><small>View and edit cells</small></span></button>
+          <button class="portal-shortcut" data-page="courses"><img src="assets/portal-icon-5.jpg" alt="" /><span><strong>Batch entry</strong><small>Fill multiple timetable cells</small></span></button>
+          <button class="portal-shortcut" data-page="fun"><img src="assets/portal-icon-1.jpg" alt="" /><span><strong>Fun timetable</strong><small>Simulated arrangements</small></span></button>
+          <button class="portal-shortcut" data-page="export"><img src="assets/portal-icon-6.jpg" alt="" /><span><strong>Wallpaper export</strong><small>iPad / phone</small></span></button>
+          <button class="portal-shortcut" data-page="help"><img src="assets/portal-icon-2.jpg" alt="" /><span><strong>How to use</strong><small>Step-by-step guide</small></span></button>
+        </div>
+      </section>
+
+      <section class="panel import-panel page-section" id="importSection" data-page-section="import" aria-labelledby="importTitle">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">ONE-CLICK IMPORT</p>
+            <h2 id="importTitle">Bring in a timetable</h2>
+            <p>iSAMS PDF or timetable JSON.</p>
+          </div>
+          <div class="panel-header-actions"><button id="importButton" class="button primary">Import PDF / JSON</button></div>
+        </div>
+        <div class="import-body">
+          <button id="dropzone" class="dropzone" type="button">
+            <span class="dropzone-icon">↑</span>
+            <strong>Choose a PDF or JSON file</strong>
+            <small>Tap here, or drag a file onto this box</small>
+          </button>
+          <div id="importStatus" class="import-status" role="status">
+            No file selected.
+          </div>
+        </div>
+      </section>
+
+      <div class="app-grid page-section" id="timetableSection" data-page-section="timetable">
+        <section class="panel timetable-panel" aria-labelledby="tableTitle">
+          <div class="panel-header">
+            <div>
+              <h2 id="tableTitle">Student timetable</h2>
+            <p>Reg–P14 · Monday–Friday</p>
+            </div>
+            <div class="panel-header-actions"><button id="demoButton" class="button secondary">Load demo</button><button id="resetButton" class="button danger">Reset</button></div>
+          </div>
+          <div class="table-wrap">
+            <table id="timetable" class="timetable"></table>
+          </div>
+        </section>
+
+        <aside class="panel editor-panel" aria-labelledby="editorTitle">
+          <div class="panel-header compact">
+            <div>
+              <p class="eyebrow">CELL EDITOR</p>
+              <h2 id="editorTitle">Select a timetable cell</h2>
+            </div>
+          </div>
+
+          <form id="cellForm" class="editor-form" autocomplete="off">
+            <label>
+              Course / activity
+              <input id="courseInput" type="text" placeholder="e.g. Chemistry" disabled />
+            </label>
+            <div class="form-row">
+              <label>
+                Teacher
+                <input id="teacherInput" type="text" placeholder="e.g. LCA" disabled />
+              </label>
+              <label>
+                Room
+                <input id="roomInput" type="text" placeholder="e.g. A312" disabled />
+              </label>
+            </div>
+            <label>
+              Note
+              <input id="noteInput" type="text" placeholder="Optional note" disabled />
+            </label>
+            <div class="editor-actions">
+              <button id="copyDownButton" type="button" class="button secondary" disabled>Copy to next period</button>
+              <button id="clearCellButton" type="button" class="button danger" disabled>Clear cell</button>
+            </div>
+          </form>
+
+          <div class="period-editor">
+            <div class="subheading">
+              <div>
+                <p class="eyebrow">PERIOD TIMES</p>
+                <h3>Edit selected period</h3>
+              </div>
+            </div>
+            <div class="form-row">
+              <label>
+                Period
+                <input id="periodLabelInput" type="text" disabled />
+              </label>
+              <label>
+                Time
+                <input id="periodTimeInput" type="text" disabled />
+              </label>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <section class="panel course-tools-panel page-section" id="courseTools" data-page-section="courses" aria-labelledby="courseToolsTitle">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">TEACHER PORTAL · BATCH ENTRY</p>
+            <h2 id="courseToolsTitle">Class timetable entry</h2>
+          </div>
+        </div>
+        <div class="batch-entry-layout">
+          <div class="batch-grid-card">
+            <div class="subheading"><div><p class="eyebrow">CELL SELECTION</p><h3>Choose cells</h3></div><div class="batch-selection-actions"><button id="batchSelectAllButton" type="button" class="button secondary">Select empty cells</button><button id="batchClearSelectionButton" type="button" class="button secondary">Clear selection</button></div></div>
+            <div id="batchGrid" class="batch-grid-wrap"></div>
+          </div>
+          <div class="batch-form-card">
+            <div class="subheading batch-form-heading"><div><p class="eyebrow">LESSON BLOCK</p><h3>Apply block</h3></div><span id="batchSelectionStatus" class="selection-count">0 selected</span></div>
+            <label>Block<select id="batchBlockSelect"></select></label>
+            <div id="batchBlockMeta" class="block-meta">No blocks detected</div>
+            <div class="batch-form-actions"><button id="batchApplyButton" type="button" class="button primary">Apply block</button><button id="batchClearCellsButton" type="button" class="button danger">Remove lessons</button></div>
+            <p id="batchActionStatus" class="batch-action-status" role="status">Select cells and choose a block.</p>
+            <div class="personal-block-form">
+              <div class="subheading"><div><p class="eyebrow">PERSONAL LESSON</p><h3>New block</h3></div></div>
+              <label>Course / activity<input id="personalCourseInput" type="text" placeholder="e.g. Chemistry Salon" autocomplete="off" /></label>
+              <div class="form-row"><label>Teacher<input id="personalTeacherInput" type="text" placeholder="e.g. LCA" /></label><label>Room<input id="personalRoomInput" type="text" placeholder="e.g. TBC" /></label></div>
+              <label>Note<input id="personalNoteInput" type="text" placeholder="Optional" /></label>
+              <button id="personalBlockButton" type="button" class="button secondary">Add block</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel fun-panel page-section" id="funPlanner" data-page-section="fun" aria-labelledby="funPlannerTitle">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">FUN TIMETABLE · FOR FUN ONLY</p>
+            <h2 id="funPlannerTitle">Fun timetable</h2>
+          </div>
+          <div class="fun-controls">
+            <label>Option
+              <select id="funScenarioSelect">
+                <option value="early">All lessons early</option>
+                <option value="friday">Finish Friday early</option>
+                <option value="compact">Reduce daily gaps</option>
+              </select>
+            </label>
+            <button id="runFunPlannerButton" type="button" class="button secondary">Generate option</button>
+          </div>
+        </div>
+        <div id="funPlannerResults" class="fun-results" aria-live="polite">
+          <div class="empty-state">Choose an option to see its simulated timetable and summary.</div>
+        </div>
+        <div id="funPreview" class="fun-preview" aria-live="polite"></div>
+      </section>
+
+      <section class="panel export-panel page-section" id="exportSection" data-page-section="export" aria-labelledby="exportTitle">
+        <div class="panel-header export-header">
+          <div>
+            <p class="eyebrow">WALLPAPER GENERATOR</p>
+            <h2 id="exportTitle">Generate campus timetable wallpaper</h2>
+          </div>
+          <div class="export-controls">
+            <label>
+              Device
+              <select id="deviceSelect">
+                <option value="default">Default</option>
+                <option value="ipad">iPad Pro · 2048 × 2732</option>
+                <option value="phone">Phone · 1080 × 2400</option>
+              </select>
+            </label>
+            <label>
+              Format
+              <select id="exportModeSelect">
+                <option value="default">Default</option>
+                <option value="native">Native timetable · Reg–P12</option>
+                <option value="p13p14">Campus + P13/P14</option>
+              </select>
+            </label>
+            <button id="downloadButton" class="button primary">Download PNG</button>
+            <button id="exportJsonButton" class="button secondary">Export JSON</button>
+          </div>
+        </div>
+        <div class="preview-shell">
+          <canvas id="wallpaperCanvas" aria-label="Campus timetable wallpaper preview"></canvas>
+        </div>
+      </section>
+
+      <section class="panel guide-panel page-section" id="howToUse" data-page-section="help" aria-labelledby="guideTitle">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">HOW TO USE</p>
+            <h2 id="guideTitle">From iSAMS to your wallpaper</h2>
+          </div>
+        </div>
+        <div class="guide-flow" aria-label="Workflow">
+          <div><span>1</span><strong>Import</strong><small>Save the iSAMS PDF and upload it here</small></div>
+          <div><span>2</span><strong>Adjust</strong><small>Correct individual cells or fill several at once</small></div>
+          <div><span>3</span><strong>Export</strong><small>Choose a device and download the wallpaper</small></div>
+        </div>
+
+        <section class="guide-stage">
+          <div class="guide-stage-heading"><span>1</span><div><p class="eyebrow">IMPORT THE SOURCE</p><h3>Save your timetable from iSAMS</h3></div></div>
+          <div class="guide-grid">
+            <article class="guide-step"><img data-guide-image="0" alt="Open the Timetable section in the pupil portal" /><h3>Open Timetable</h3><p>Tap <strong>Timetable</strong> in the portal navigation.</p></article>
+            <article class="guide-step"><img data-guide-image="1" alt="Open My Timetable in the pupil portal" /><h3>Open My Timetable</h3><p>Wait until the complete Monday–Friday grid appears.</p></article>
+            <article class="guide-step"><img data-guide-image="2" alt="Use the iPad share menu to save the timetable PDF" /><h3>Open the share menu</h3><p>Tap Share, then choose <strong>Save to Files</strong>.</p></article>
+            <article class="guide-step"><img data-guide-image="3" alt="Save the timetable PDF to the iPad" /><h3>Import the PDF</h3><p>Return here, open <strong>Import</strong>, and choose the saved file.</p></article>
+          </div>
+        </section>
+
+        <section class="guide-stage">
+          <div class="guide-stage-heading"><span>2</span><div><p class="eyebrow">ADJUST YOUR TIMETABLE</p><h3>Correct the timetable</h3></div></div>
+          <div class="guide-methods">
+            <article class="guide-method"><span class="method-tag">ONE CELL</span><h4>Use Timetable</h4><ol><li>Open <strong>Timetable</strong>.</li><li>Tap the cell you want to change.</li><li>Edit Course, Teacher, Room or Note in <strong>Cell Editor</strong>.</li><li>Your change is saved automatically.</li></ol></article>
+            <article class="guide-method"><span class="method-tag">SEVERAL CELLS</span><h4>Use Batch entry</h4><ol><li>Open <strong>Batch entry</strong>.</li><li>Select the target cells.</li><li>Choose a detected block and select <strong>Apply block</strong>.</li><li>For a new activity, add a <strong>Personal lesson</strong> first.</li></ol></article>
+          </div>
+        </section>
+
+        <section class="guide-stage guide-export-stage">
+          <div class="guide-stage-heading"><span>3</span><div><p class="eyebrow">CREATE THE WALLPAPER</p><h3>Export the timetable</h3></div></div>
+          <div class="export-instructions"><div><strong>Choose Device</strong><p>Default, iPad Pro or Phone.</p></div><div><strong>Choose Format</strong><p>Default is fixed. Device wallpapers can use Reg–P12 or P13/P14.</p></div><div><strong>Check Preview</strong><p>Check the timetable.</p></div><div><strong>Download PNG</strong><p>Save the image.</p></div></div>
+        </section>
+        <div class="guide-note">
+          <strong>Before downloading:</strong> check the Timetable page first. The wallpaper uses the timetable currently saved in this browser.
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Pupil Timetable System · iSAMS-compatible import · Not an official school service
+    </footer>
+
+    <input id="importInput" type="file" accept=".pdf,.json,application/pdf,application/json" hidden />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="logo-data.js?v=202609200450"></script>
+    <script src="guide-data.js?v=202609200450"></script>
+    <script src="app.js?v=202609200450"></script>
+  </body>
+</html>
