@@ -29,8 +29,9 @@ body {
   background: #eef0f2;
 }
 
-.page-section { display:none; }
-.page-section.active { display:block; }
+.page-section { display: none !important; }
+.page-section.active { display: block !important; }
+.page-section.active.app-grid { display: grid !important; }
 
 button,
 input,
