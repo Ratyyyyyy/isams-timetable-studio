@@ -200,6 +200,8 @@ const manualRoomInput = document.querySelector("#manualRoomInput");
 const manualNoteInput = document.querySelector("#manualNoteInput");
 const manualStandingInput = document.querySelector("#manualStandingInput");
 const manualAddButton = document.querySelector("#manualAddButton");
+const funScenarioSelect = document.querySelector("#funScenarioSelect");
+const funFantasyTable = document.querySelector("#funFantasyTable");
 const logoImage = new Image();
 if (window.UCS_LOGO_DATA) logoImage.src = window.UCS_LOGO_DATA;
 
@@ -525,6 +527,7 @@ function runFunPlanner() {
   const latest = function (count) { return count ? periods[Math.min(count - 1, periods.length - 1)].label : "—"; };
   const friday = counts[4];
   const earlyShare = occupied.length ? Math.round(occupied.filter(function (item) { return /^P[1-4]$/.test(item.key.split("|")[0]); }).length / occupied.length * 100) : 0;
+  const scenario = funScenarioSelect ? funScenarioSelect.value : "early";
   const cards = [
     ["All classes early", "Pack each day's lessons from P1 upward.", counts.map(latest).join(" / "), "The week would keep the same lesson counts, but every day starts as early as possible."],
     ["Friday finish first", "Compress Friday to the earliest available periods.", latest(friday), friday ? "Friday's last class would be " + latest(friday) + "." : "Friday is already free."],
@@ -532,6 +535,40 @@ function runFunPlanner() {
   ];
   const container = document.querySelector("#funPlannerResults");
   if (container) container.innerHTML = cards.map(function (card) { return "<article class=\"fun-card\"><p class=\"eyebrow\">" + escapeHtml(card[0]) + "</p><h3>" + escapeHtml(card[2]) + "</h3><p>" + escapeHtml(card[1]) + "</p><small>" + escapeHtml(card[3]) + "</small></article>"; }).join("") + "<p class=\"fun-footnote\">Current timetable: " + occupied.length + " occupied lesson cells · early-period share " + earlyShare + "%.</p>";
+  drawFantasyTable(scenario);
+}
+
+function fantasyCells(scenario) {
+  const fantasy = {};
+  DAYS.forEach(function (day) {
+    const original = state.periods.filter(function (period) { return period.label !== "Reg" && getCell(period.label, day).course; });
+    const movable = original.filter(function (period) { return period.label !== "P13" && period.label !== "P14"; });
+    const shouldCompact = scenario === "early" || scenario === "compact" || (scenario === "friday" && day === "Friday");
+    if (shouldCompact) {
+      movable.forEach(function (period, index) {
+        const target = state.periods.find(function (candidate) { return candidate.label === "P" + (index + 1); });
+        if (target) fantasy[key(target.label, day)] = getCell(period.label, day);
+      });
+      ["P13", "P14"].forEach(function (label) { const cell = getCell(label, day); if (cell.course) fantasy[key(label, day)] = cell; });
+    } else {
+      original.forEach(function (period) { fantasy[key(period.label, day)] = getCell(period.label, day); });
+    }
+  });
+  return fantasy;
+}
+
+function drawFantasyTable(scenario) {
+  if (!funFantasyTable) return;
+  const fantasy = fantasyCells(scenario);
+  const header = "<thead><tr><th>P</th>" + DAYS.map(function (day) { return "<th>" + day + "</th>"; }).join("") + "</tr></thead>";
+  const rows = state.periods.map(function (period) {
+    const cells = DAYS.map(function (day) {
+      const lines = cellLines(fantasy[key(period.label, day)] || emptyCell());
+      return "<td class=\"lesson-cell\">" + lines.map(function (line, index) { return "<span class=\"" + (index === 0 ? "lesson-title" : "") + "\">" + escapeHtml(line) + "</span>"; }).join("") + "</td>";
+    }).join("");
+    return "<tr><th class=\"period-cell\">" + escapeHtml(period.label) + "<span>" + escapeHtml(period.time) + "</span></th>" + cells + "</tr>";
+  }).join("");
+  funFantasyTable.innerHTML = header + "<tbody>" + rows + "</tbody>";
 }
 
 document.querySelectorAll("[data-add-mode]").forEach(function (button) {
@@ -1055,10 +1092,20 @@ function setupGuideImages() {
   });
 }
 
-document.querySelectorAll("[data-scroll]").forEach(function (button) {
+function showPage(page) {
+  document.querySelectorAll("[data-page-section]").forEach(function (section) {
+    section.classList.toggle("active", section.dataset.pageSection === page);
+  });
+  document.querySelectorAll("[data-page]").forEach(function (button) {
+    button.classList.toggle("active", button.dataset.page === page);
+  });
+  if (location.hash !== "#" + page) history.replaceState(null, "", "#" + page);
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll("[data-page]").forEach(function (button) {
   button.addEventListener("click", function () {
-    const target = document.getElementById(button.dataset.scroll);
-    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    showPage(button.dataset.page);
   });
 });
 
@@ -1066,4 +1113,5 @@ setupGuideImages();
 renderTable();
 renderCourseTools();
 drawWallpaper();
+showPage(location.hash.slice(1) || "home");
 logoImage.addEventListener("load", drawWallpaper);

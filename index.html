@@ -20,16 +20,17 @@
     </header>
 
     <nav class="portal-nav" aria-label="Main navigation">
-      <button class="nav-item active" data-scroll="home">Home</button>
-      <button class="nav-item" data-scroll="timetableSection">Timetable</button>
-      <button class="nav-item" data-scroll="importSection">Import</button>
-      <button class="nav-item" data-scroll="howToUse">How to use</button>
-      <button class="nav-item" data-scroll="exportSection">Export</button>
-      <button class="nav-item" data-scroll="funPlanner">趣味排课</button>
+      <button class="nav-item active" data-page="home">Home</button>
+      <button class="nav-item" data-page="timetable">Timetable</button>
+      <button class="nav-item" data-page="courses">Courses</button>
+      <button class="nav-item" data-page="fun">趣味排课</button>
+      <button class="nav-item" data-page="import">Import</button>
+      <button class="nav-item" data-page="export">Export</button>
+      <button class="nav-item" data-page="help">How to use</button>
     </nav>
 
     <main class="workspace">
-      <section class="page-heading" id="home">
+      <section class="page-heading page-section active" id="home" data-page-section="home">
         <div>
           <p class="eyebrow">PUPIL TIMETABLE SYSTEM</p>
           <h1>My Campus Timetable</h1>
@@ -44,7 +45,7 @@
         </div>
       </section>
 
-      <section class="panel import-panel" id="importSection" aria-labelledby="importTitle">
+      <section class="panel import-panel page-section" id="importSection" data-page-section="import" aria-labelledby="importTitle">
         <div class="panel-header">
           <div>
             <p class="eyebrow">ONE-CLICK IMPORT</p>
@@ -65,7 +66,7 @@
         </div>
       </section>
 
-      <div class="app-grid" id="timetableSection">
+      <div class="app-grid page-section" id="timetableSection" data-page-section="timetable">
         <section class="panel timetable-panel" aria-labelledby="tableTitle">
           <div class="panel-header">
             <div>
@@ -134,7 +135,7 @@
         </aside>
       </div>
 
-      <section class="panel course-tools-panel" id="courseTools" aria-labelledby="courseToolsTitle">
+      <section class="panel course-tools-panel page-section" id="courseTools" data-page-section="courses" aria-labelledby="courseToolsTitle">
         <div class="panel-header">
           <div>
             <p class="eyebrow">COURSE TOOLS</p>
@@ -180,21 +181,31 @@
         </div>
       </section>
 
-      <section class="panel fun-panel" id="funPlanner" aria-labelledby="funPlannerTitle">
+      <section class="panel fun-panel page-section" id="funPlanner" data-page-section="fun" aria-labelledby="funPlannerTitle">
         <div class="panel-header">
           <div>
             <p class="eyebrow">趣味排课 · 仅供娱乐</p>
             <h2 id="funPlannerTitle">趣味排课</h2>
             <p>These are playful, non-destructive rearrangements calculated in the browser. Your real timetable is not changed.</p>
           </div>
-          <button id="runFunPlannerButton" type="button" class="button secondary">生成趣味方案</button>
+          <div class="fun-controls">
+            <label>幻想方案
+              <select id="funScenarioSelect">
+                <option value="early">全部排早课</option>
+                <option value="friday">周五尽早放学</option>
+                <option value="compact">每天减少空档</option>
+              </select>
+            </label>
+            <button id="runFunPlannerButton" type="button" class="button secondary">生成趣味方案</button>
+          </div>
         </div>
         <div id="funPlannerResults" class="fun-results" aria-live="polite">
           <div class="empty-state">Run the scenarios to compare an early-start week, a compact week, and an earlier Friday finish.</div>
         </div>
+        <div class="fantasy-table-wrap"><table id="funFantasyTable" class="timetable fantasy-table"></table></div>
       </section>
 
-      <section class="panel export-panel" id="exportSection" aria-labelledby="exportTitle">
+      <section class="panel export-panel page-section" id="exportSection" data-page-section="export" aria-labelledby="exportTitle">
         <div class="panel-header export-header">
           <div>
             <p class="eyebrow">WALLPAPER GENERATOR</p>
@@ -230,7 +241,7 @@
         </div>
       </section>
 
-      <section class="panel guide-panel" id="howToUse" aria-labelledby="guideTitle">
+      <section class="panel guide-panel page-section" id="howToUse" data-page-section="help" aria-labelledby="guideTitle">
         <div class="panel-header">
           <div>
             <p class="eyebrow">HOW TO USE</p>

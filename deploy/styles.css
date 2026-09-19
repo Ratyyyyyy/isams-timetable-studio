@@ -29,6 +29,9 @@ body {
   background: #eef0f2;
 }
 
+.page-section { display:none; }
+.page-section.active { display:block; }
+
 button,
 input,
 select {
@@ -41,7 +44,7 @@ button {
 
 .portal-header {
   width: min(1240px, 100%);
-  height: 112px;
+  height: 82px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -61,7 +64,7 @@ button {
 }
 
 .isams-brand > strong {
-  font-size: clamp(43px, 5vw, 68px);
+  font-size: clamp(28px, 3.3vw, 42px);
   font-weight: 600;
   letter-spacing: 0.03em;
   line-height: 1;
@@ -143,7 +146,7 @@ button {
 
 .portal-nav {
   width: min(1240px, 100%);
-  height: 42px;
+  height: 36px;
   margin: 0 auto;
   display: flex;
   align-items: stretch;
@@ -153,13 +156,13 @@ button {
 }
 
 .nav-item {
-  min-width: 104px;
-  padding: 0 22px;
+  min-width: 92px;
+  padding: 0 15px;
   color: #f4f4f4;
   background: transparent;
   border: 0;
   border-left: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .nav-item:last-child {
@@ -172,8 +175,8 @@ button {
 }
 
 .workspace {
-  width: min(1200px, calc(100% - 40px));
-  margin: 24px auto 58px;
+  width: min(1120px, calc(100% - 34px));
+  margin: 18px auto 48px;
 }
 
 .page-heading {
@@ -266,7 +269,7 @@ button {
 .panel {
   background: #fff;
   border: 1px solid #b7bcc0;
-  box-shadow: var(--shadow);
+  box-shadow: 0 1px 3px rgba(29, 42, 54, 0.12);
 }
 
 .panel-header {
@@ -276,7 +279,7 @@ button {
   justify-content: space-between;
   gap: 16px;
   padding: 10px 14px;
-  background: linear-gradient(#fafafa, #ededed);
+  background: linear-gradient(#f7f7f7, #dfe1e3);
   border-bottom: 1px solid #a9afb4;
 }
 
@@ -540,6 +543,12 @@ footer {
 .check-line input { min-height:0 !important; width:15px; height:15px; }
 .hidden { display:none !important; }
 .fun-results { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; padding:14px; }
+.fun-controls { display:flex; align-items:end; gap:8px; }
+.fun-controls label { display:grid; gap:3px; color:var(--muted); font-size:10px; }
+.fun-controls select { min-height:32px; border:1px solid #9da5aa; background:#fff; padding:4px 8px; font-size:12px; }
+.fantasy-table-wrap { overflow:auto; padding:0 14px 14px; }
+.fantasy-table { min-width:790px; }
+.fantasy-table td { height:42px; }
 .fun-card { min-height:145px; padding:14px; border:1px solid #c7cbd0; background:linear-gradient(#fff,#f2f4f5); }
 .fun-card h3 { margin:7px 0; font-size:24px; font-weight:500; color:var(--navy); }
 .fun-card p { margin:4px 0; font-size:12px; line-height:1.45; }
