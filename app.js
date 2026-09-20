@@ -91,7 +91,7 @@ function makeDemoState() {
 }
 
 function normalizePeriodLabel(value) {
-  const raw = String(value || "").trim().replace(/\s+/g, "").toUpperCase();
+  const raw = String(value || "").normalize("NFKC").trim().replace(/\s+/g, "").toUpperCase();
   if (raw === "REG") return "Reg";
   const match = raw.match(/^P0*(\d{1,2})$/);
   if (!match) return null;
@@ -863,7 +863,12 @@ async function extractPdfTextItems(file) {
   }
 
   const data = new Uint8Array(await file.arrayBuffer());
-  const documentProxy = await window.pdfjsLib.getDocument({ data: data }).promise;
+  const documentProxy = await window.pdfjsLib.getDocument({
+    data: data,
+    cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
+    cMapPacked: true,
+    standardFontDataUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/standard_fonts/",
+  }).promise;
   const items = [];
 
   for (let pageNumber = 1; pageNumber <= documentProxy.numPages; pageNumber += 1) {
@@ -874,7 +879,7 @@ async function extractPdfTextItems(file) {
     });
 
     textContent.items.forEach(function (item) {
-      const text = String(item.str || "").replace(/\s+/g, " ").trim();
+      const text = String(item.str || "").normalize("NFKC").replace(/\s+/g, " ").trim();
       if (!text) return;
       const transform = item.transform || [1, 0, 0, 1, 0, 0];
       items.push({
@@ -891,7 +896,7 @@ async function extractPdfTextItems(file) {
 }
 
 function isTimeText(text) {
-  return /^\d{1,2}:\d{2}(?:\s*[–—-]\s*\d{1,2}:\d{2})?$/.test(String(text).trim());
+  return /^\d{1,2}:\d{2}(?:\s*[–—-]\s*\d{1,2}:\d{2})?$/.test(String(text).normalize("NFKC").trim());
 }
 
 function median(values) {
