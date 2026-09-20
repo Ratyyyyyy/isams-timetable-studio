@@ -1,0 +1,27 @@
+{
+  "name": "Pupil Timetable System",
+  "short_name": "Timetable",
+  "description": "Import an iSAMS timetable, edit lessons and create device wallpapers.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#dfe1e2",
+  "theme_color": "#063b5c",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "pwa-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "pwa-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
