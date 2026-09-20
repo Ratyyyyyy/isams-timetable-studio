@@ -1403,3 +1403,12 @@ updateExportControls();
 showPage(location.hash.slice(1) || "home");
 runFunPlanner();
 logoImage.addEventListener("load", drawWallpaper);
+
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./sw.js").catch(function () {
+      // The website remains usable when service workers are unavailable.
+    });
+  });
+}
