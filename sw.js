@@ -1,4 +1,4 @@
-const CACHE_NAME = "pupil-timetable-v1";
+const CACHE_NAME = "pupil-timetable-v2";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -7,7 +7,9 @@ const APP_SHELL = [
   "./logo-data.js",
   "./guide-data.js",
   "./manifest.webmanifest",
-  "./pwa-icon.svg"
+  "./pwa-icon.svg",
+  "./pwa-192.png",
+  "./pwa-512.png"
 ];
 
 self.addEventListener("install", function (event) {
