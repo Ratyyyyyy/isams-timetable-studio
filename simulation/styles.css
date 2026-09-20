@@ -1675,3 +1675,36 @@ footer a { color:#315f8b; }
   .panel-heading { align-items:flex-start; }
   .section-icon { width:28px; height:28px; flex-basis:28px; }
 }
+
+
+/* Original iSAMS PDF notice */
+.native-pdf-notice {
+  min-height:70px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:4px;
+  padding:9px 11px 9px 38px;
+  border:1px solid #c4a66a;
+  background:#fff7d7 url("https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/error.png") no-repeat 12px 12px;
+  color:#554729;
+  font-size:10px;
+  line-height:1.45;
+}
+.native-pdf-notice strong { color:#684d18; font-size:11px; }
+.native-pdf-notice b { color:#3f4549; }
+.native-pdf-warning {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:10px 10px 0;
+  padding:8px 10px 8px 36px;
+  border:1px solid #c4a66a;
+  background:#fff7d7 url("https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/error.png") no-repeat 11px center;
+  color:#554729;
+  font-size:10px;
+}
+.native-pdf-warning strong { flex:0 0 auto; color:#684d18; font-size:11px; }
+@media (max-width:760px) {
+  .native-pdf-warning { align-items:flex-start; flex-direction:column; gap:2px; }
+}
