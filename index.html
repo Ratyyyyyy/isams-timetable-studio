@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#00365d" />
     <link rel="icon" type="image/gif" href="assets/legacy-portal.gif" />
     <title>Pupil Timetable System</title>
-    <link rel="stylesheet" href="styles.css?v=202609200450" />
+    <link rel="stylesheet" href="styles.css?v=202609200610" />
   </head>
   <body>
     <header class="portal-header">
@@ -35,29 +35,29 @@
 
     <main class="workspace">
       <section class="panel portal-home-tools page-section" data-page-section="home" aria-label="Portal shortcuts">
-        <div class="panel-header"><div><p class="eyebrow">PUPIL PORTAL</p><h2>Home</h2></div></div>
+        <div class="panel-header"><div class="panel-heading"><img class="section-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons32x32/application_home.png" alt="" /><div><p class="eyebrow">PUPIL PORTAL</p><h2>Home</h2></div></div></div>
         <div class="portal-shortcuts">
-          <button class="portal-shortcut" data-page="import"><img src="assets/portal-icon-3.jpg" alt="" /><span><strong>Import timetable</strong><small>PDF / JSON</small></span></button>
-          <button class="portal-shortcut" data-page="timetable"><img src="assets/portal-icon-4.jpg" alt="" /><span><strong>My timetable</strong><small>View and edit cells</small></span></button>
-          <button class="portal-shortcut" data-page="courses"><img src="assets/portal-icon-5.jpg" alt="" /><span><strong>Batch entry</strong><small>Fill multiple timetable cells</small></span></button>
-          <button class="portal-shortcut" data-page="fun"><img src="assets/portal-icon-1.jpg" alt="" /><span><strong>Fun timetable</strong><small>Simulated arrangements</small></span></button>
-          <button class="portal-shortcut" data-page="export"><img src="assets/portal-icon-6.jpg" alt="" /><span><strong>Wallpaper export</strong><small>iPad / phone</small></span></button>
-          <button class="portal-shortcut" data-page="help"><img src="assets/portal-icon-2.jpg" alt="" /><span><strong>How to use</strong><small>Step-by-step guide</small></span></button>
+          <button class="portal-shortcut" data-page="import"><img src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons32x32/folder_page_white.png" alt="" /><span><strong>Import timetable</strong><small>PDF / JSON</small></span></button>
+          <button class="portal-shortcut" data-page="timetable"><img src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons32x32/calendar_view_week.png" alt="" /><span><strong>My timetable</strong><small>View and edit cells</small></span></button>
+          <button class="portal-shortcut" data-page="courses"><img src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons32x32/database_table.png" alt="" /><span><strong>Batch entry</strong><small>Fill multiple timetable cells</small></span></button>
+          <button class="portal-shortcut" data-page="fun"><img src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons32x32/magic_wand_2.png" alt="" /><span><strong>Fun timetable</strong><small>Simulated arrangements</small></span></button>
+          <button class="portal-shortcut" data-page="export"><img src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons32x32/picture_save.png" alt="" /><span><strong>Wallpaper export</strong><small>iPad / phone</small></span></button>
+          <button class="portal-shortcut" data-page="help"><img src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons32x32/help.png" alt="" /><span><strong>How to use</strong><small>Step-by-step guide</small></span></button>
         </div>
       </section>
 
       <section class="panel import-panel page-section" id="importSection" data-page-section="import" aria-labelledby="importTitle">
         <div class="panel-header">
-          <div>
+          <div class="panel-heading"><img class="section-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons32x32/folder_page_white.png" alt="" /><div>
             <p class="eyebrow">ONE-CLICK IMPORT</p>
             <h2 id="importTitle">Bring in a timetable</h2>
             <p>iSAMS PDF or timetable JSON.</p>
-          </div>
-          <div class="panel-header-actions"><button id="importButton" class="button primary">Import PDF / JSON</button></div>
+          </div></div>
+          <div class="panel-header-actions"><button id="importButton" class="button primary"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/folder_go.png" alt="" />Import PDF / JSON</button></div>
         </div>
         <div class="import-body">
           <button id="dropzone" class="dropzone" type="button">
-            <span class="dropzone-icon">↑</span>
+            <img class="dropzone-image" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/inbox_upload.png" alt="" />
             <strong>Choose a PDF or JSON file</strong>
             <small>Tap here, or drag a file onto this box</small>
           </button>
@@ -70,11 +70,11 @@
       <div class="app-grid page-section" id="timetableSection" data-page-section="timetable">
         <section class="panel timetable-panel" aria-labelledby="tableTitle">
           <div class="panel-header">
-            <div>
+            <div class="panel-heading"><img class="section-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons32x32/calendar_view_week.png" alt="" /><div>
               <h2 id="tableTitle">Student timetable</h2>
             <p>Reg–P14 · Monday–Friday</p>
-            </div>
-            <div class="panel-header-actions"><button id="demoButton" class="button secondary">Load demo</button><button id="resetButton" class="button danger">Reset</button></div>
+            </div></div>
+            <div class="panel-header-actions"><button id="demoButton" class="button secondary"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/application_view_detail.png" alt="" />Load demo</button><button id="resetButton" class="button danger"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/arrow_refresh.png" alt="" />Reset</button></div>
           </div>
           <div class="table-wrap">
             <table id="timetable" class="timetable"></table>
@@ -83,10 +83,10 @@
 
         <aside class="panel editor-panel" aria-labelledby="editorTitle">
           <div class="panel-header compact">
-            <div>
+            <div class="panel-heading"><img class="section-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons32x32/application_form_edit.png" alt="" /><div>
               <p class="eyebrow">CELL EDITOR</p>
               <h2 id="editorTitle">Select a timetable cell</h2>
-            </div>
+            </div></div>
           </div>
 
           <form id="cellForm" class="editor-form" autocomplete="off">
@@ -109,8 +109,8 @@
               <input id="noteInput" type="text" placeholder="Optional note" disabled />
             </label>
             <div class="editor-actions">
-              <button id="copyDownButton" type="button" class="button secondary" disabled>Copy to next period</button>
-              <button id="clearCellButton" type="button" class="button danger" disabled>Clear cell</button>
+              <button id="copyDownButton" type="button" class="button secondary" disabled><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/page_copy.png" alt="" />Copy to next period</button>
+              <button id="clearCellButton" type="button" class="button danger" disabled><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/bin.png" alt="" />Clear cell</button>
             </div>
           </form>
 
@@ -137,28 +137,28 @@
 
       <section class="panel course-tools-panel page-section" id="courseTools" data-page-section="courses" aria-labelledby="courseToolsTitle">
         <div class="panel-header">
-          <div>
+          <div class="panel-heading"><img class="section-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons32x32/database_table.png" alt="" /><div>
             <p class="eyebrow">TEACHER PORTAL · BATCH ENTRY</p>
             <h2 id="courseToolsTitle">Class timetable entry</h2>
-          </div>
+          </div></div>
         </div>
         <div class="batch-entry-layout">
           <div class="batch-grid-card">
-            <div class="subheading"><div><p class="eyebrow">CELL SELECTION</p><h3>Choose cells</h3></div><div class="batch-selection-actions"><button id="batchSelectAllButton" type="button" class="button secondary">Select empty cells</button><button id="batchClearSelectionButton" type="button" class="button secondary">Clear selection</button></div></div>
+            <div class="subheading"><div><p class="eyebrow">CELL SELECTION</p><h3>Choose cells</h3></div><div class="batch-selection-actions"><button id="batchSelectAllButton" type="button" class="button secondary"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/table_multiple.png" alt="" />Select empty cells</button><button id="batchClearSelectionButton" type="button" class="button secondary"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/cancel.png" alt="" />Clear selection</button></div></div>
             <div id="batchGrid" class="batch-grid-wrap"></div>
           </div>
           <div class="batch-form-card">
             <div class="subheading batch-form-heading"><div><p class="eyebrow">LESSON BLOCK</p><h3>Apply block</h3></div><span id="batchSelectionStatus" class="selection-count">0 selected</span></div>
             <label>Block<select id="batchBlockSelect"></select></label>
             <div id="batchBlockMeta" class="block-meta">No blocks detected</div>
-            <div class="batch-form-actions"><button id="batchApplyButton" type="button" class="button primary">Apply block</button><button id="batchClearCellsButton" type="button" class="button danger">Remove lessons</button></div>
+            <div class="batch-form-actions"><button id="batchApplyButton" type="button" class="button primary"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/accept.png" alt="" />Apply block</button><button id="batchClearCellsButton" type="button" class="button danger"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/delete.png" alt="" />Remove lessons</button></div>
             <p id="batchActionStatus" class="batch-action-status" role="status">Select cells and choose a block.</p>
             <div class="personal-block-form">
               <div class="subheading"><div><p class="eyebrow">PERSONAL LESSON</p><h3>New block</h3></div></div>
               <label>Course / activity<input id="personalCourseInput" type="text" placeholder="e.g. Chemistry Salon" autocomplete="off" /></label>
               <div class="form-row"><label>Teacher<input id="personalTeacherInput" type="text" placeholder="e.g. LCA" /></label><label>Room<input id="personalRoomInput" type="text" placeholder="e.g. TBC" /></label></div>
               <label>Note<input id="personalNoteInput" type="text" placeholder="Optional" /></label>
-              <button id="personalBlockButton" type="button" class="button secondary">Add block</button>
+              <button id="personalBlockButton" type="button" class="button secondary"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/add.png" alt="" />Add block</button>
             </div>
           </div>
         </div>
@@ -166,10 +166,10 @@
 
       <section class="panel fun-panel page-section" id="funPlanner" data-page-section="fun" aria-labelledby="funPlannerTitle">
         <div class="panel-header">
-          <div>
+          <div class="panel-heading"><img class="section-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons32x32/magic_wand_2.png" alt="" /><div>
             <p class="eyebrow">FUN TIMETABLE · FOR FUN ONLY</p>
             <h2 id="funPlannerTitle">Fun timetable</h2>
-          </div>
+          </div></div>
           <div class="fun-controls">
             <label>Option
               <select id="funScenarioSelect">
@@ -178,7 +178,7 @@
                 <option value="compact">Reduce daily gaps</option>
               </select>
             </label>
-            <button id="runFunPlannerButton" type="button" class="button secondary">Generate option</button>
+            <button id="runFunPlannerButton" type="button" class="button secondary"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/magic_wand_2.png" alt="" />Generate option</button>
           </div>
         </div>
         <div id="funPlannerResults" class="fun-results" aria-live="polite">
@@ -189,10 +189,10 @@
 
       <section class="panel export-panel page-section" id="exportSection" data-page-section="export" aria-labelledby="exportTitle">
         <div class="panel-header export-header">
-          <div>
+          <div class="panel-heading"><img class="section-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons32x32/picture_save.png" alt="" /><div>
             <p class="eyebrow">WALLPAPER GENERATOR</p>
             <h2 id="exportTitle">Generate campus timetable wallpaper</h2>
-          </div>
+          </div></div>
           <div class="export-controls">
             <label>
               Device
@@ -210,8 +210,8 @@
                 <option value="p13p14">Campus + P13/P14</option>
               </select>
             </label>
-            <button id="downloadButton" class="button primary">Download PNG</button>
-            <button id="exportJsonButton" class="button secondary">Export JSON</button>
+            <button id="downloadButton" class="button primary"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/picture_save.png" alt="" />Download PNG</button>
+            <button id="exportJsonButton" class="button secondary"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/page_white_code.png" alt="" />Export JSON</button>
           </div>
         </div>
         <div class="preview-shell">
@@ -221,10 +221,10 @@
 
       <section class="panel guide-panel page-section" id="howToUse" data-page-section="help" aria-labelledby="guideTitle">
         <div class="panel-header">
-          <div>
+          <div class="panel-heading"><img class="section-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons32x32/help.png" alt="" /><div>
             <p class="eyebrow">HOW TO USE</p>
             <h2 id="guideTitle">From iSAMS to your wallpaper</h2>
-          </div>
+          </div></div>
         </div>
         <div class="guide-flow" aria-label="Workflow">
           <div><span>1</span><strong>Import</strong><small>Save the iSAMS PDF and upload it here</small></div>
@@ -261,7 +261,7 @@
     </main>
 
     <footer>
-      Pupil Timetable System · iSAMS-compatible import · Not an official school service
+      Pupil Timetable System · iSAMS-compatible import · Not an official school service<br />Interface icons: <a href="https://cdnjs.com/libraries/fatcow-icons" target="_blank" rel="noreferrer">FatCow Farm-Fresh</a> · CC BY 3.0
     </footer>
 
     <input id="importInput" type="file" accept=".pdf,.json,application/pdf,application/json" hidden />
