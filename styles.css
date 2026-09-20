@@ -1661,3 +1661,17 @@ footer { padding: 14px; background: #d2d4d5; border-top: 1px solid #afb3b5; font
   .batch-selection-actions { width: 100%; }
   .batch-selection-actions .button { flex: 1 1 120px; }
 }
+
+
+/* Legacy Windows-style portal icon system */
+.panel-heading { min-width:0; display:flex; align-items:center; gap:9px; }
+.section-icon { width:32px; height:32px; flex:0 0 32px; object-fit:contain; }
+.button { display:inline-flex; align-items:center; justify-content:center; gap:5px; }
+.button-icon { width:16px; height:16px; flex:0 0 16px; object-fit:contain; }
+.portal-shortcut img { width:32px; height:32px; flex:0 0 32px; image-rendering:auto; }
+.dropzone-image { width:32px; height:32px; object-fit:contain; image-rendering:pixelated; }
+footer a { color:#315f8b; }
+@media (max-width:760px) {
+  .panel-heading { align-items:flex-start; }
+  .section-icon { width:28px; height:28px; flex-basis:28px; }
+}
