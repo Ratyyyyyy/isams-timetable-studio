@@ -61,6 +61,10 @@
             <strong>Choose a PDF or JSON file</strong>
             <small>Tap here, or drag a file onto this box</small>
           </button>
+          <div class="native-pdf-notice" role="note">
+            <strong>Original iSAMS PDF required</strong>
+            <span>Use the PDF exported directly from iSAMS: <b>Share → Options → PDF → Save to Files</b>. Screenshots, scans, Web Archive files and converted PDFs are not supported.</span>
+          </div>
           <div id="importStatus" class="import-status" role="status">
             No file selected.
           </div>
@@ -227,18 +231,24 @@
           </div></div>
         </div>
         <div class="guide-flow" aria-label="Workflow">
-          <div><span>1</span><strong>Import</strong><small>Save the iSAMS PDF and upload it here</small></div>
+          <div><span>1</span><strong>Import</strong><small>Export the original iSAMS PDF and upload it here</small></div>
           <div><span>2</span><strong>Adjust</strong><small>Correct individual cells or fill several at once</small></div>
           <div><span>3</span><strong>Export</strong><small>Choose a device and download the wallpaper</small></div>
         </div>
 
         <section class="guide-stage">
           <div class="guide-stage-heading"><span>1</span><div><p class="eyebrow">IMPORT THE SOURCE</p><h3>Save your timetable from iSAMS</h3></div></div>
+          <div class="native-pdf-warning">
+            <strong>Use the original iSAMS PDF only</strong>
+            <span>Do not use a screenshot, scanned document, Web Archive, or a PDF converted by another app.</span>
+          </div>
           <div class="guide-grid">
             <article class="guide-step"><img data-guide-image="0" alt="Open the Timetable section in the pupil portal" /><h3>Open Timetable</h3><p>Tap <strong>Timetable</strong> in the portal navigation.</p></article>
             <article class="guide-step"><img data-guide-image="1" alt="Open My Timetable in the pupil portal" /><h3>Open My Timetable</h3><p>Wait until the complete Monday–Friday grid appears.</p></article>
-            <article class="guide-step"><img data-guide-image="2" alt="Use the iPad share menu to save the timetable PDF" /><h3>Open the share menu</h3><p>Tap Share, then choose <strong>Save to Files</strong>.</p></article>
-            <article class="guide-step"><img data-guide-image="3" alt="Save the timetable PDF to the iPad" /><h3>Import the PDF</h3><p>Return here, open <strong>Import</strong>, and choose the saved file.</p></article>
+            <article class="guide-step"><img data-guide-image="2" alt="Open the iPad share menu from the iSAMS timetable page" /><h3>Open Share</h3><p>Tap the Safari <strong>Share</strong> button while the iSAMS timetable is open.</p></article>
+            <article class="guide-step"><img data-guide-image="5" alt="Choose PDF in the iPad share options" /><h3>Choose PDF</h3><p>Open <strong>Options</strong>, select <strong>PDF</strong>, then tap Done.</p></article>
+            <article class="guide-step"><img data-guide-image="4" alt="Save the original iSAMS timetable PDF to Files" /><h3>Save to Files</h3><p>Choose <strong>Save to Files</strong>. Keep this original file unchanged.</p></article>
+            <article class="guide-step"><img data-guide-image="3" alt="Import the saved original iSAMS PDF" /><h3>Import the PDF</h3><p>Return here, open <strong>Import</strong>, and choose the saved PDF.</p></article>
           </div>
         </section>
 
@@ -267,7 +277,7 @@
     <input id="importInput" type="file" accept=".pdf,.json,application/pdf,application/json" hidden />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="logo-data.js?v=202609200450"></script>
-    <script src="guide-data.js?v=202609200450"></script>
+    <script src="guide-data.js?v=202609201105"></script>
     <script src="app.js?v=202609201045"></script>
   </body>
 </html>
