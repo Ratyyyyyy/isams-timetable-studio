@@ -227,6 +227,11 @@ const personalCourseInput = document.querySelector("#personalCourseInput");
 const personalTeacherInput = document.querySelector("#personalTeacherInput");
 const personalRoomInput = document.querySelector("#personalRoomInput");
 const personalNoteInput = document.querySelector("#personalNoteInput");
+const profileDialog = document.querySelector("#profileDialog");
+const profileForm = document.querySelector("#profileForm");
+const schoolNameInput = document.querySelector("#schoolNameInput");
+const studentNameInput = document.querySelector("#studentNameInput");
+const classNameInput = document.querySelector("#classNameInput");
 const logoImage = new Image();
 if (window.UCS_LOGO_DATA) logoImage.src = window.UCS_LOGO_DATA;
 
@@ -253,6 +258,35 @@ function saveState() {
   const statusDot = document.querySelector(".portal-status span");
   if (statusDot) statusDot.classList.add("saved-pulse");
 }
+
+function openProfileDialog(fromCsv) {
+  schoolNameInput.value = state.profile.schoolName;
+  studentNameInput.value = state.profile.studentName;
+  classNameInput.value = state.profile.className;
+  document.querySelector("#profileImportNote").hidden = !fromCsv;
+  profileDialog.showModal();
+  (schoolNameInput.value ? studentNameInput : schoolNameInput).focus();
+}
+
+document.querySelector("#editProfileButton").addEventListener("click", function () {
+  openProfileDialog(false);
+});
+
+document.querySelectorAll("[data-close-profile]").forEach(function (button) {
+  button.addEventListener("click", function () { profileDialog.close(); });
+});
+
+profileForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+  state.profile = {
+    schoolName: schoolNameInput.value.trim(),
+    studentName: studentNameInput.value.trim(),
+    className: classNameInput.value.trim()
+  };
+  saveState();
+  drawWallpaper();
+  profileDialog.close();
+});
 
 function cellLines(cell) {
   return [cell.course, cell.teacher, cell.room, cell.note].filter(Boolean);
@@ -772,7 +806,7 @@ if (runFunPlannerButton) runFunPlannerButton.addEventListener("click", runFunPla
 if (funScenarioSelect) funScenarioSelect.addEventListener("change", runFunPlanner);
 
 document.querySelector("#demoButton").addEventListener("click", function () {
-  applyState(makeDemoState(), "Demo timetable loaded. You can edit it or import a real PDF.", "success");
+  applyState(makeDemoState(), "Demo timetable loaded.", "success");
   document.querySelector("#timetableSection").scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
@@ -831,6 +865,14 @@ async function importFile(file) {
   const lowerName = file.name.toLowerCase();
   setImportStatus("Reading " + file.name + "…", "working");
   try {
+    if (lowerName.endsWith(".csv") || file.type === "text/csv") {
+      if (!window.IsamsCsv) throw new Error("CSV reader unavailable. Refresh and try again.");
+      const parsed = window.IsamsCsv.parse(await file.text(), file.name, PERIODS);
+      applyState(parsed, "CSV imported · " + Object.keys(parsed.cells).length + " lessons" +
+        (parsed.profile.studentName ? " · " + parsed.profile.studentName : ""), "success");
+      openProfileDialog(true);
+      return;
+    }
     if (lowerName.endsWith(".json") || file.type === "application/json") {
       const parsed = JSON.parse(await file.text());
       applyState(parsed, "JSON imported.", "success");
@@ -838,14 +880,14 @@ async function importFile(file) {
     }
 
     if (!lowerName.endsWith(".pdf") && file.type !== "application/pdf") {
-      throw new Error("Please choose an iSAMS PDF or a Pupil Timetable System JSON file.");
+      throw new Error("Choose an iSAMS CSV, Classic portal PDF or timetable JSON.");
     }
 
     const items = await extractPdfTextItems(file);
     const parsed = parseIsamsPdfItems(items);
     const recognised = Object.keys(parsed.cells).length;
     if (!recognised) {
-      throw new Error("The PDF opened, but no timetable cells were recognised. Try the iSAMS Print My Timetable PDF.");
+      throw new Error("No timetable cells recognised. For the new portal, use CSV. For the Classic portal, use the original Print My Timetable PDF.");
     }
     applyState(
       parsed,
@@ -1392,6 +1434,14 @@ document.querySelectorAll("[data-page]").forEach(function (button) {
     if (button.dataset.homeHelp === "true") {
       const guide = document.querySelector("#howToUse");
       if (guide) guide.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    if (button.dataset.guideTarget) {
+      const target = document.getElementById(button.dataset.guideTarget);
+      if (target) {
+        const details = target.closest("details");
+        if (details) details.open = true;
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     }
   });
 });

@@ -1,20 +1,25 @@
-const CACHE_NAME = "pupil-timetable-v2";
+const CACHE_NAME = "pupil-timetable-v3-20261003";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css",
-  "./app.js",
-  "./logo-data.js",
-  "./guide-data.js",
+  "./styles.css?v=202610032200",
+  "./app.js?v=202610032200",
+  "./import-csv.js?v=202610032200",
+  "./logo-data.js?v=202609200450",
+  "./guide-data.js?v=202609201120",
   "./manifest.webmanifest",
   "./pwa-icon.svg",
   "./pwa-192.png",
-  "./pwa-512.png"
+  "./pwa-512.png",
+  "./assets/guide/new-portal-1.png",
+  "./assets/guide/new-portal-2.png",
+  "./assets/guide/new-portal-3.png",
+  "./assets/guide/new-portal-4.png"
 ];
 
 self.addEventListener("install", function (event) {
   event.waitUntil(caches.open(CACHE_NAME).then(function (cache) {
-    return cache.addAll(APP_SHELL);
+    return cache.addAll(APP_SHELL.map(function (url) { return new Request(url, { cache: "reload" }); }));
   }).then(function () {
     return self.skipWaiting();
   }));
@@ -23,7 +28,7 @@ self.addEventListener("install", function (event) {
 self.addEventListener("activate", function (event) {
   event.waitUntil(caches.keys().then(function (keys) {
     return Promise.all(keys.filter(function (key) {
-      return key !== CACHE_NAME;
+      return key.startsWith("pupil-timetable-") && key !== CACHE_NAME;
     }).map(function (key) {
       return caches.delete(key);
     }));
