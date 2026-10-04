@@ -1,9 +1,9 @@
-const CACHE_NAME = "pupil-timetable-v4-20261004";
+const CACHE_NAME = "pupil-timetable-v4-20261004-mobile2";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=202610041335",
-  "./app.js?v=202610041335",
+  "./styles.css?v=202610041400",
+  "./app.js?v=202610041400",
   "./import-csv.js?v=202610032200",
   "./logo-data.js?v=202609200450",
   "./guide-data.js?v=202609201120",

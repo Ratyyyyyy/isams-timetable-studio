@@ -1807,7 +1807,7 @@ footer a { color:#315f8b; }
   .portal-mark { flex:0 0 36px; }
   .isams-brand > div > strong { font-size:21px; line-height:1.15; white-space:normal; }
   .isams-brand small { font-size:10px; }
-  .portal-nav { position:sticky; top:0; z-index:10; height:auto; overflow:visible; }
+  .portal-nav { position:sticky; top:0; z-index:10; display:block; height:auto; overflow:visible; }
   .mobile-nav-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:52px; padding:4px 10px; color:#fff; }
   .mobile-nav-bar > strong { font-size:15px; }
   .mobile-nav-bar .button { min-width:90px; min-height:42px; }
@@ -1841,7 +1841,7 @@ footer a { color:#315f8b; }
   .timetable:not(.day-table) .lesson-room,
   .timetable:not(.day-table) .lesson-note { font-size:12px; }
   .timetable:not(.day-table) .lesson-button { min-height:78px; }
-  .mobile-table-controls { display:flex; flex-direction:column; gap:8px; padding:10px; border-bottom:1px solid #bcc4c8; background:#f0f1f2; }
+  .mobile-table-controls { position:sticky; top:52px; z-index:5; display:flex; flex-direction:column; gap:8px; padding:10px; border-bottom:1px solid #bcc4c8; background:#f0f1f2; }
   .view-switch { display:flex; width:150px; border:1px solid #8e9aa2; }
   .view-switch button { flex:1; min-height:40px; padding:6px; border:0; background:linear-gradient(#fff, #e1e3e4); color:#3f4c56; font:inherit; }
   .view-switch button[aria-pressed="true"] { background:#1d5a7f; color:#fff; }

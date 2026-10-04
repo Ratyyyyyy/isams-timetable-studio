@@ -361,6 +361,12 @@ document.querySelector("#cellForm").addEventListener("submit", function (event) 
   updateSelectedCell();
   closeMobileEditor();
 });
+document.querySelector("#cellForm").addEventListener("keydown", function (event) {
+  if (event.key !== "Enter" || event.isComposing) return;
+  event.preventDefault();
+  updateSelectedCell();
+  closeMobileEditor();
+});
 document.querySelectorAll("[data-mobile-view]").forEach(function (button) {
   button.addEventListener("click", function () {
     mobileView = button.dataset.mobileView;
