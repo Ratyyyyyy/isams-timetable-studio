@@ -1802,7 +1802,8 @@ footer a { color:#315f8b; }
 }
 
 @media (max-width:600px) {
-  body { font-size:14px; }
+  body { min-width:0; font-size:14px; }
+  html.mobile-editor-open { overflow:hidden; }
   .portal-header { height:auto; min-height:76px; padding:12px; }
   .portal-mark { flex:0 0 36px; }
   .isams-brand > div > strong { font-size:21px; line-height:1.15; white-space:normal; }
