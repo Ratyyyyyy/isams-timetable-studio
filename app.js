@@ -333,6 +333,7 @@ function renderDayControls() {
 
 function openMobileEditor() {
   if (!phoneLayout.matches || mobileEditorDialog.open) return;
+  document.documentElement.classList.add("mobile-editor-open");
   mobileEditorDialog.append(editorPanel);
   mobileEditorDialog.showModal();
   document.querySelector("#closeEditorButton").focus({ preventScroll: true });
@@ -344,6 +345,7 @@ function closeMobileEditor() {
 }
 
 mobileEditorDialog.addEventListener("close", function () {
+  document.documentElement.classList.remove("mobile-editor-open");
   editorHome.append(editorPanel);
   if (!phoneLayout.matches || !editorHome.classList.contains("active") || !selection) return;
   const buttons = Array.from(timetable.querySelectorAll(".lesson-button, .period-button"));
