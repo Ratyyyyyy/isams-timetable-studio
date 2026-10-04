@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
     <meta name="theme-color" content="#00365d" />
     <link rel="icon" type="image/gif" href="assets/legacy-portal.gif" />
     <link rel="manifest" href="manifest.webmanifest?v=202609201150" />
@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Timetable" />
     <title>Pupil Timetable System</title>
-    <link rel="stylesheet" href="styles.css?v=202610032200" />
+    <link rel="stylesheet" href="styles.css?v=202610041335" />
   </head>
   <body>
     <header class="portal-header">
@@ -30,6 +30,8 @@
     </header>
 
     <nav class="portal-nav" aria-label="Main navigation">
+      <div class="mobile-nav-bar"><strong id="mobilePageTitle">Home</strong><button id="menuToggleButton" type="button" class="button secondary" aria-expanded="false" aria-controls="navigationLinks">Menu <span aria-hidden="true">▾</span></button></div>
+      <div id="navigationLinks" class="nav-links">
       <button class="nav-item active" data-page="home">Home</button>
       <button class="nav-item" data-page="timetable">Timetable</button>
       <button class="nav-item" data-page="courses">Batch entry</button>
@@ -37,6 +39,7 @@
       <button class="nav-item" data-page="import">Import</button>
       <button class="nav-item" data-page="export">Export</button>
       <button class="nav-item" data-page="help">How to use</button>
+      </div>
     </nav>
 
     <main class="workspace">
@@ -91,6 +94,10 @@
             </div></div>
             <div class="panel-header-actions"><button id="demoButton" class="button secondary"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/application_view_detail.png" alt="" />Load demo</button><button id="resetButton" class="button danger"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/arrow_refresh.png" alt="" />Reset</button></div>
           </div>
+          <div class="mobile-table-controls" data-day-controls="timetable">
+            <div class="view-switch" role="group" aria-label="Timetable view"><button type="button" data-mobile-view="day" aria-pressed="true">Day</button><button type="button" data-mobile-view="week" aria-pressed="false">Week</button></div>
+            <div class="day-tabs" role="group" aria-label="Timetable day"></div>
+          </div>
           <div class="table-wrap">
             <table id="timetable" class="timetable"></table>
           </div>
@@ -102,8 +109,8 @@
               <p class="eyebrow">CELL EDITOR</p>
               <h2 id="editorTitle">Select a timetable cell</h2>
             </div></div>
+            <button id="closeEditorButton" type="button" class="dialog-close mobile-only" aria-label="Close cell editor">×</button>
           </div>
-
           <form id="cellForm" class="editor-form" autocomplete="off">
             <label>
               Course / activity
@@ -147,6 +154,7 @@
               </label>
             </div>
           </div>
+          <div class="mobile-editor-footer"><span>Saved automatically</span><button id="doneEditorButton" type="button" class="button primary">Done</button></div>
         </aside>
       </div>
 
@@ -160,6 +168,7 @@
         <div class="batch-entry-layout">
           <div class="batch-grid-card">
             <div class="subheading"><div><p class="eyebrow">CELL SELECTION</p><h3>Choose cells</h3></div><div class="batch-selection-actions"><button id="batchSelectAllButton" type="button" class="button secondary"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/table_multiple.png" alt="" />Select empty cells</button><button id="batchClearSelectionButton" type="button" class="button secondary"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/cancel.png" alt="" />Clear selection</button></div></div>
+            <div class="mobile-table-controls" data-day-controls="batch"><div class="day-tabs" role="group" aria-label="Batch entry day"></div></div>
             <div id="batchGrid" class="batch-grid-wrap"></div>
           </div>
           <div class="batch-form-card">
@@ -168,15 +177,18 @@
             <div id="batchBlockMeta" class="block-meta">No blocks detected</div>
             <div class="batch-form-actions"><button id="batchApplyButton" type="button" class="button primary"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/accept.png" alt="" />Apply block</button><button id="batchClearCellsButton" type="button" class="button danger"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/delete.png" alt="" />Remove lessons</button></div>
             <p id="batchActionStatus" class="batch-action-status" role="status">Select cells and choose a block.</p>
-            <div class="personal-block-form">
-              <div class="subheading"><div><p class="eyebrow">PERSONAL LESSON</p><h3>New block</h3></div></div>
+            <details class="personal-block-form" id="personalBlockDetails" open>
+              <summary>New personal lesson</summary>
+              <div class="personal-block-fields">
               <label>Course / activity<input id="personalCourseInput" type="text" placeholder="e.g. Chemistry Salon" autocomplete="off" /></label>
               <div class="form-row"><label>Teacher<input id="personalTeacherInput" type="text" placeholder="e.g. LCA" /></label><label>Room<input id="personalRoomInput" type="text" placeholder="e.g. TBC" /></label></div>
               <label>Note<input id="personalNoteInput" type="text" placeholder="Optional" /></label>
               <button id="personalBlockButton" type="button" class="button secondary"><img class="button-icon" src="https://cdnjs.cloudflare.com/ajax/libs/fatcow-icons/20130425/FatCow_Icons16x16/add.png" alt="" />Add block</button>
-            </div>
+              </div>
+            </details>
           </div>
         </div>
+        <div class="mobile-batch-actions"><span id="mobileBatchStatus" role="status">0 selected</span><button id="mobileBatchApplyButton" type="button" class="button primary" disabled>Apply block</button></div>
       </section>
 
       <section class="panel fun-panel page-section" id="funPlanner" data-page-section="fun" aria-labelledby="funPlannerTitle">
@@ -199,6 +211,7 @@
         <div id="funPlannerResults" class="fun-results" aria-live="polite">
           <div class="empty-state">Choose an option to see its simulated timetable and summary.</div>
         </div>
+        <div class="mobile-table-controls" data-day-controls="fun"><div class="day-tabs" role="group" aria-label="Fun timetable day"></div></div>
         <div id="funPreview" class="fun-preview" aria-live="polite"></div>
       </section>
 
@@ -283,8 +296,8 @@
         <section class="guide-stage">
           <div class="guide-stage-heading"><span>2</span><div><p class="eyebrow">ADJUST YOUR TIMETABLE</p><h3>Correct the timetable</h3></div></div>
           <div class="guide-methods">
-            <article class="guide-method"><span class="method-tag">ONE CELL</span><h4>Use Timetable</h4><ol><li>Open <strong>Timetable</strong>.</li><li>Tap the cell you want to change.</li><li>Edit Course, Teacher, Room or Note in <strong>Cell Editor</strong>.</li><li>Your change is saved automatically.</li></ol></article>
-            <article class="guide-method"><span class="method-tag">SEVERAL CELLS</span><h4>Use Batch entry</h4><ol><li>Open <strong>Batch entry</strong>.</li><li>Select the target cells.</li><li>Choose a detected block and select <strong>Apply block</strong>.</li><li>For a new activity, add a <strong>Personal lesson</strong> first.</li></ol></article>
+            <article class="guide-method"><span class="method-tag">ONE CELL</span><h4>Use Timetable</h4><ol><li>Open <strong>Timetable</strong>. On a phone, choose a day; use <strong>Week</strong> for the full grid.</li><li>Tap the cell you want to change.</li><li>Edit Course, Teacher, Room or Note in <strong>Cell Editor</strong>. On a phone, tap <strong>Done</strong> to return.</li><li>Your change is saved automatically.</li></ol></article>
+            <article class="guide-method"><span class="method-tag">SEVERAL CELLS</span><h4>Use Batch entry</h4><ol><li>Open <strong>Batch entry</strong>.</li><li>Select the target cells. On a phone, selections are kept when you change days.</li><li>Choose a detected block and select <strong>Apply block</strong>.</li><li>For a new activity, open <strong>New personal lesson</strong> and add a block first.</li></ol></article>
           </div>
         </section>
 
@@ -302,6 +315,8 @@
       Pupil Timetable System · iSAMS-compatible import · Not an official school service<br />Interface icons: <a href="https://cdnjs.com/libraries/fatcow-icons" target="_blank" rel="noreferrer">FatCow Farm-Fresh</a> · CC BY 3.0
     </footer>
 
+    <dialog id="mobileEditorDialog" class="mobile-editor-dialog" aria-labelledby="editorTitle"></dialog>
+
     <dialog id="profileDialog" class="profile-dialog" aria-labelledby="profileDialogTitle" aria-describedby="profileImportNote">
       <div class="panel-header"><h2 id="profileDialogTitle">Timetable details</h2><button type="button" class="dialog-close" data-close-profile aria-label="Close timetable details">×</button></div>
       <form id="profileForm" class="profile-form">
@@ -318,6 +333,6 @@
     <script src="logo-data.js?v=202609200450"></script>
     <script src="guide-data.js?v=202609201120"></script>
     <script src="import-csv.js?v=202610032200"></script>
-    <script src="app.js?v=202610032200"></script>
+    <script src="app.js?v=202610041335"></script>
   </body>
 </html>
