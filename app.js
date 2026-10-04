@@ -183,6 +183,10 @@ function loadState() {
 
 let state = loadState();
 let selection = null;
+const phoneLayout = window.matchMedia("(max-width: 600px)");
+let mobileView = "day";
+const mobileDays = { timetable: DAYS[0], batch: DAYS[0], fun: DAYS[0] };
+const batchSelection = new Set();
 
 const timetable = document.querySelector("#timetable");
 const editorTitle = document.querySelector("#editorTitle");
@@ -232,6 +236,12 @@ const profileForm = document.querySelector("#profileForm");
 const schoolNameInput = document.querySelector("#schoolNameInput");
 const studentNameInput = document.querySelector("#studentNameInput");
 const classNameInput = document.querySelector("#classNameInput");
+const editorPanel = document.querySelector(".editor-panel");
+const editorHome = document.querySelector("#timetableSection");
+const mobileEditorDialog = document.querySelector("#mobileEditorDialog");
+const menuToggleButton = document.querySelector("#menuToggleButton");
+const mobileBatchApplyButton = document.querySelector("#mobileBatchApplyButton");
+const mobileBatchStatus = document.querySelector("#mobileBatchStatus");
 const logoImage = new Image();
 if (window.UCS_LOGO_DATA) logoImage.src = window.UCS_LOGO_DATA;
 
@@ -292,16 +302,114 @@ function cellLines(cell) {
   return [cell.course, cell.teacher, cell.room, cell.note].filter(Boolean);
 }
 
+function visibleDays(view) {
+  return phoneLayout.matches && (view !== "timetable" || mobileView === "day")
+    ? [mobileDays[view]] : DAYS;
+}
+
+function renderDayControls() {
+  document.querySelectorAll("[data-day-controls]").forEach(function (controls) {
+    const view = controls.dataset.dayControls;
+    controls.querySelector(".day-tabs").innerHTML = DAYS.map(function (day) {
+      return "<button type=\"button\" data-view=\"" + view + "\" data-day=\"" + day +
+        "\" aria-label=\"" + day + "\" aria-pressed=\"" + (mobileDays[view] === day) +
+        "\">" + day.slice(0, 3) + "</button>";
+    }).join("");
+    controls.querySelector(".day-tabs").hidden = view === "timetable" && mobileView === "week";
+    controls.querySelectorAll("[data-day]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        mobileDays[view] = button.dataset.day;
+        renderDayControls();
+        if (view === "timetable") renderTable();
+        else if (view === "batch") renderBatchGrid();
+        else renderFunPreview(funScenarioSelect.value);
+      });
+    });
+  });
+  document.querySelectorAll("[data-mobile-view]").forEach(function (button) {
+    button.setAttribute("aria-pressed", button.dataset.mobileView === mobileView);
+  });
+}
+
+function openMobileEditor() {
+  if (!phoneLayout.matches || mobileEditorDialog.open) return;
+  mobileEditorDialog.append(editorPanel);
+  mobileEditorDialog.showModal();
+  document.querySelector("#closeEditorButton").focus({ preventScroll: true });
+}
+
+function closeMobileEditor() {
+  if (mobileEditorDialog.open) mobileEditorDialog.close();
+  editorHome.append(editorPanel);
+}
+
+mobileEditorDialog.addEventListener("close", function () {
+  editorHome.append(editorPanel);
+  if (!phoneLayout.matches || !editorHome.classList.contains("active") || !selection) return;
+  const buttons = Array.from(timetable.querySelectorAll(".lesson-button, .period-button"));
+  const target = buttons.find(function (button) {
+    const cell = button.closest("td, th");
+    return selection.day ? cell.dataset.period === selection.period && cell.dataset.day === selection.day
+      : Number(cell.dataset.periodIndex) === selection.periodIndex;
+  });
+  if (target) target.focus({ preventScroll: true });
+});
+document.querySelector("#closeEditorButton").addEventListener("click", closeMobileEditor);
+document.querySelector("#doneEditorButton").addEventListener("click", closeMobileEditor);
+document.querySelector("#cellForm").addEventListener("submit", function (event) {
+  event.preventDefault();
+  updateSelectedCell();
+  closeMobileEditor();
+});
+document.querySelector("#cellForm").addEventListener("keydown", function (event) {
+  if (event.key !== "Enter" || event.isComposing) return;
+  event.preventDefault();
+  updateSelectedCell();
+  closeMobileEditor();
+});
+document.querySelectorAll("[data-mobile-view]").forEach(function (button) {
+  button.addEventListener("click", function () {
+    mobileView = button.dataset.mobileView;
+    renderDayControls();
+    renderTable();
+  });
+});
+menuToggleButton.addEventListener("click", function () {
+  const expanded = menuToggleButton.getAttribute("aria-expanded") !== "true";
+  menuToggleButton.setAttribute("aria-expanded", expanded);
+  document.querySelector(".portal-nav").classList.toggle("menu-open", expanded);
+});
+
+function updateEditorViewport() {
+  if (!window.visualViewport) return;
+  mobileEditorDialog.style.setProperty("--editor-height", (window.visualViewport.height - 20) + "px");
+  mobileEditorDialog.style.setProperty("--keyboard-inset", Math.max(0, window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop) + "px");
+}
+if (window.visualViewport) window.visualViewport.addEventListener("resize", updateEditorViewport);
+updateEditorViewport();
+document.querySelector("#personalBlockDetails").open = !phoneLayout.matches;
+phoneLayout.addEventListener("change", function () {
+  if (!phoneLayout.matches) closeMobileEditor();
+  menuToggleButton.setAttribute("aria-expanded", "false");
+  document.querySelector(".portal-nav").classList.remove("menu-open");
+  renderTable();
+  renderDayControls();
+  renderFunPreview(funScenarioSelect.value);
+});
+
 function renderTable() {
+  const days = visibleDays("timetable");
+  timetable.classList.toggle("day-table", days.length === 1);
   const header = "<thead><tr><th>P</th>" +
-    DAYS.map(function (day) { return "<th>" + day + "</th>"; }).join("") +
+    days.map(function (day) { return "<th>" + day + "</th>"; }).join("") +
     "</tr></thead>";
 
   const rows = state.periods.map(function (period, periodIndex) {
     const periodCell =
       "<th class=\"period-cell\" data-period-index=\"" + periodIndex + "\">" +
-      escapeHtml(period.label) + "<span>" + escapeHtml(period.time) + "</span></th>";
-    const cells = DAYS.map(function (day) {
+      "<button type=\"button\" class=\"period-button\" aria-label=\"Edit " + escapeHtml(period.label) + " time\">" +
+      escapeHtml(period.label) + "<span>" + escapeHtml(period.time) + "</span></button></th>";
+    const cells = days.map(function (day) {
       return renderLessonCell(period.label, day, getCell(period.label, day));
     }).join("");
     return "<tr>" + periodCell + cells + "</tr>";
@@ -325,7 +433,7 @@ function renderTable() {
 }
 
 function selectedBatchCells() {
-  return batchGrid ? Array.from(batchGrid.querySelectorAll("input[data-batch-cell]:checked")).map(function (input) { return input.dataset.batchCell; }) : [];
+  return Array.from(batchSelection);
 }
 
 function updateBatchSelectionStatus() {
@@ -333,23 +441,32 @@ function updateBatchSelectionStatus() {
     const count = selectedBatchCells().length;
     batchSelectionStatus.textContent = count + " selected";
     batchSelectionStatus.classList.toggle("has-selection", count > 0);
+    mobileBatchStatus.textContent = count + " selected";
+    mobileBatchApplyButton.disabled = !count || !selectedBatchBlock();
   }
 }
 
 function renderBatchGrid() {
   if (!batchGrid) return;
-  const header = "<table class=\"batch-grid\"><thead><tr><th>P</th>" + DAYS.map(function (day) { return "<th>" + day + "</th>"; }).join("") + "</tr></thead><tbody>";
+  const days = visibleDays("batch");
+  const header = "<table class=\"batch-grid" + (days.length === 1 ? " day-table" : "") + "\"><thead><tr><th>P</th>" + days.map(function (day) { return "<th>" + day + "</th>"; }).join("") + "</tr></thead><tbody>";
   const rows = state.periods.map(function (period) {
-    const cells = DAYS.map(function (day) {
+    const cells = days.map(function (day) {
       const cell = getCell(period.label, day);
       const label = cell.course ? escapeHtml(cell.course) : "<span class=\"batch-empty\">Empty</span>";
       const meta = escapeHtml([cell.teacher, cell.room].filter(Boolean).join(" · "));
-      return "<td><label class=\"batch-cell\"><input type=\"checkbox\" aria-label=\"Select " + escapeHtml(period.label + " " + day) + "\" data-batch-cell=\"" + escapeHtml(key(period.label, day)) + "\" /><span class=\"batch-cell-content\"><strong class=\"batch-course\">" + label + "</strong>" + (meta ? "<small class=\"batch-meta\">" + meta + "</small>" : "") + "</span></label></td>";
+      return "<td><label class=\"batch-cell\"><input type=\"checkbox\" aria-label=\"Select " + escapeHtml(period.label + " " + day) + "\" data-batch-cell=\"" + escapeHtml(key(period.label, day)) + "\"" + (batchSelection.has(key(period.label, day)) ? " checked" : "") + " /><span class=\"batch-cell-content\"><strong class=\"batch-course\">" + label + "</strong>" + (meta ? "<small class=\"batch-meta\">" + meta + "</small>" : "") + "</span></label></td>";
     }).join("");
     return "<tr><th class=\"period-cell\">" + escapeHtml(period.label) + "<span>" + escapeHtml(period.time) + "</span></th>" + cells + "</tr>";
   }).join("");
   batchGrid.innerHTML = header + rows + "</tbody></table>";
-  batchGrid.querySelectorAll("input[data-batch-cell]").forEach(function (input) { input.addEventListener("change", updateBatchSelectionStatus); });
+  batchGrid.querySelectorAll("input[data-batch-cell]").forEach(function (input) {
+    input.addEventListener("change", function () {
+      if (input.checked) batchSelection.add(input.dataset.batchCell);
+      else batchSelection.delete(input.dataset.batchCell);
+      updateBatchSelectionStatus();
+    });
+  });
   updateBatchSelectionStatus();
 }
 
@@ -374,10 +491,12 @@ function applyBatchEntry(clearOnly) {
       delete state.standingCourses[cellKey];
     }
   });
+  batchSelection.clear();
   saveState();
   renderTable();
   drawWallpaper();
   if (batchActionStatus) batchActionStatus.textContent = (clearOnly ? "Removed from " : "Applied to ") + selected.length + " cell" + (selected.length === 1 ? "" : "s") + ".";
+  mobileBatchStatus.textContent = batchActionStatus.textContent;
 }
 
 function renderLessonCell(period, day, cell) {
@@ -397,7 +516,8 @@ function renderLessonCell(period, day, cell) {
   }).join("");
   return "<td class=\"lesson-cell" + (isSelected ? " selected" : "") +
     "\" data-period=\"" + escapeHtml(period) + "\" data-day=\"" + escapeHtml(day) + "\">" +
-    content + "</td>";
+    "<button type=\"button\" class=\"lesson-button\" aria-label=\"Edit " + escapeHtml(period + " " + day + (cell.course ? ": " + cell.course : ": Free period")) + "\">" +
+    (content || "<span class=\"mobile-empty\">Free period</span>") + "</button></td>";
 }
 
 function escapeHtml(value) {
@@ -425,6 +545,7 @@ function selectCell(period, day) {
     selection.periodIndex < 0 || selection.periodIndex >= state.periods.length - 1;
   setPeriodEditor(selection.periodIndex);
   renderTable();
+  openMobileEditor();
 }
 
 function selectPeriod(index) {
@@ -440,6 +561,7 @@ function selectPeriod(index) {
   copyDownButton.disabled = true;
   setPeriodEditor(index);
   renderTable();
+  openMobileEditor();
 }
 
 function setPeriodEditor(index) {
@@ -532,6 +654,8 @@ function resetState() {
   if (!window.confirm("Reset to the blank Campus timetable?")) return;
   state = makeDefaultState();
   selection = null;
+  batchSelection.clear();
+  closeMobileEditor();
   saveState();
   editorTitle.textContent = "Select a timetable cell";
   editorInputs.forEach(function (input) {
@@ -553,6 +677,8 @@ document.querySelector("#resetButton").addEventListener("click", resetState);
 function applyState(nextState, message, kind) {
   state = normaliseState(nextState);
   selection = null;
+  batchSelection.clear();
+  closeMobileEditor();
   saveState();
   editorTitle.textContent = "Select a timetable cell";
   editorInputs.forEach(function (input) {
@@ -630,6 +756,7 @@ function renderBatchBlocks(preferredSignature) {
       batchBlockMeta.textContent = [source, selected.note].filter(Boolean).join(" · ");
     }
   }
+  updateBatchSelectionStatus();
 }
 
 function addPersonalBlock() {
@@ -757,16 +884,17 @@ function renderFunPreview(scenario) {
   const preview = document.querySelector("#funPreview");
   if (!preview) return;
   const fantasy = fantasyCells(scenario);
+  const days = visibleDays("fun");
   const header = "<div class=\"fun-preview-heading\"><strong>Simulated timetable preview</strong><span>Preview only · the real timetable is unchanged</span></div>";
-  const tableHead = "<thead><tr><th>P</th>" + DAYS.map(function (day) { return "<th>" + day + "</th>"; }).join("") + "</tr></thead>";
+  const tableHead = "<thead><tr><th>P</th>" + days.map(function (day) { return "<th>" + day + "</th>"; }).join("") + "</tr></thead>";
   const rows = state.periods.map(function (period) {
-    const cells = DAYS.map(function (day) {
+    const cells = days.map(function (day) {
       const lines = cellLines(fantasy[key(period.label, day)] || emptyCell());
       return "<td>" + lines.map(function (line, index) { return "<span class=\"" + (index === 0 ? "lesson-title" : "") + "\">" + escapeHtml(line) + "</span>"; }).join("") + "</td>";
     }).join("");
     return "<tr><th class=\"period-cell\">" + escapeHtml(period.label) + "<span>" + escapeHtml(period.time) + "</span></th>" + cells + "</tr>";
   }).join("");
-  preview.innerHTML = header + "<div class=\"fun-preview-table-wrap\"><table class=\"fun-preview-table\">" + tableHead + "<tbody>" + rows + "</tbody></table></div>";
+  preview.innerHTML = header + "<div class=\"fun-preview-table-wrap\"><table class=\"fun-preview-table" + (days.length === 1 ? " day-table" : "") + "\">" + tableHead + "<tbody>" + rows + "</tbody></table></div>";
 }
 
 document.querySelectorAll("[data-add-mode]").forEach(function (button) {
@@ -785,6 +913,7 @@ const batchSelectAllButton = document.querySelector("#batchSelectAllButton");
 const batchClearSelectionButton = document.querySelector("#batchClearSelectionButton");
 const personalBlockButton = document.querySelector("#personalBlockButton");
 if (batchApplyButton) batchApplyButton.addEventListener("click", function () { applyBatchEntry(false); });
+mobileBatchApplyButton.addEventListener("click", function () { applyBatchEntry(false); });
 if (batchClearCellsButton) batchClearCellsButton.addEventListener("click", function () { applyBatchEntry(true); });
 if (batchBlockSelect) batchBlockSelect.addEventListener("change", function () { renderBatchBlocks(batchBlockSelect.value); });
 if (personalBlockButton) personalBlockButton.addEventListener("click", addPersonalBlock);
@@ -792,11 +921,14 @@ if (batchSelectAllButton) batchSelectAllButton.addEventListener("click", functio
   batchGrid.querySelectorAll("input[data-batch-cell]").forEach(function (input) {
     const cell = state.cells[input.dataset.batchCell];
     input.checked = !cell || !cell.course;
+    if (input.checked) batchSelection.add(input.dataset.batchCell);
+    else batchSelection.delete(input.dataset.batchCell);
   });
   updateBatchSelectionStatus();
   if (batchActionStatus) batchActionStatus.textContent = "Empty cells selected.";
 });
 if (batchClearSelectionButton) batchClearSelectionButton.addEventListener("click", function () {
+  batchSelection.clear();
   batchGrid.querySelectorAll("input[data-batch-cell]").forEach(function (input) { input.checked = false; });
   updateBatchSelectionStatus();
   if (batchActionStatus) batchActionStatus.textContent = "Selection cleared.";
@@ -1418,9 +1550,17 @@ function setupGuideImages() {
 }
 
 function showPage(page) {
+  const validPages = ["home", "timetable", "courses", "fun", "import", "export", "help"];
+  if (!validPages.includes(page)) page = "home";
+  closeMobileEditor();
   document.querySelectorAll("[data-page-section]").forEach(function (section) {
     section.classList.toggle("active", section.dataset.pageSection === page);
   });
+  const navItem = document.querySelector(".nav-item[data-page=\"" + page + "\"]");
+  document.querySelector("#mobilePageTitle").textContent = navItem.textContent;
+  menuToggleButton.setAttribute("aria-expanded", "false");
+  document.querySelector(".portal-nav").classList.remove("menu-open");
+  document.querySelector(".site-notice").hidden = !["home", "import", "help"].includes(page);
   document.querySelectorAll("[data-page]").forEach(function (button) {
     button.classList.toggle("active", button.dataset.page === page);
   });
@@ -1445,8 +1585,10 @@ document.querySelectorAll("[data-page]").forEach(function (button) {
     }
   });
 });
+window.addEventListener("hashchange", function () { showPage(location.hash.slice(1)); });
 
 setupGuideImages();
+renderDayControls();
 renderTable();
 renderCourseTools();
 updateExportControls();
